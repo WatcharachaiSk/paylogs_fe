@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+/* custom global style */
+body {
+  @apply bg-gray-50 text-gray-800;
+}
+
+a {
+  @apply text-blue-600 hover:text-blue-800;
+}
