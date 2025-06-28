@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css"; // import global css ของโปรเจกต์
 import { ReactNode } from "react";
 import InputOut from "@/components/login/InputOut";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "PayLogs",
@@ -26,9 +27,7 @@ function Header() {
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">PayLogs</h1>
         <nav className="space-x-4">
-          <a href="/" className="hover:underline">
-            Home
-          </a>
+          <Link href="/">Home</Link>
           <a href="/login" className="hover:underline">
             Login
           </a>{" "}

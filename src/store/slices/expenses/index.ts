@@ -1,23 +1,27 @@
-import { create } from 'zustand';
+import { create } from "zustand";
+import { Expense } from "./types";
+import axios from "axios";
+import configAxios from "@/lib/configAxios";
+import { API_PATHS } from "@/lib/apiPaths";
 
-interface Expense {
-  id: string;
-  amount: number;
-  category: string;
-  description: string;
-  date: string;
-}
-
+// Zustand store interface
 interface ExpenseState {
   expenses: Expense[];
   setExpenses: (expenses: Expense[]) => void;
-  addExpense: (expense: Expense) => void;
-  removeExpense: (id: string) => void;
+  fetchExpenses: () => Promise<void>;
 }
 
 export const useExpenseStore = create<ExpenseState>((set) => ({
   expenses: [],
   setExpenses: (expenses) => set({ expenses }),
-  addExpense: (expense) => set((state) => ({ expenses: [...state.expenses, expense] })),
-  removeExpense: (id) => set((state) => ({ expenses: state.expenses.filter(e => e.id !== id) })),
+
+  fetchExpenses: async () => {
+    try {
+      const res = await axios(configAxios("get", API_PATHS.LOGS));
+      if (res.status == 200) set({ expenses: res.data });
+      console.log("expenses is ", res.data);
+    } catch (err) {
+      console.error("Error fetching expenses:", err);
+    }
+  },
 }));

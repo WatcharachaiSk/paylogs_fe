@@ -1,11 +1,13 @@
 "use client";
 import { useAuthStore } from "@/store/slices";
+import Link from "next/link";
 
 function InputOut() {
   const { logout } = useAuthStore();
 
   return (
-    <a
+    <Link
+      href="/login"
       onClick={() => {
         logout();
         window.location.reload();
@@ -13,7 +15,7 @@ function InputOut() {
       className="hover:underline"
     >
       logout
-    </a>
+    </Link>
   );
 }
 

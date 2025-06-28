@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axios from "axios";
 import { setCookie, deleteCookie } from "cookies-next";
+import { API_PATHS } from "@/lib/apiPaths";
+import configAxios from "@/lib/configAxios";
 
 interface AuthState {
   token: string | null;
@@ -17,11 +19,16 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       login: async (email, password) => {
         try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-          const response = await axios.post(`${apiUrl}/auth/login`, {
-            email,
-            password,
-          });
+          // const response = await axios.post(API_PATHS.LOGIN, {
+          //   email,
+          //   password,
+          // });
+          const response = await axios(
+            configAxios("post", API_PATHS.LOGIN, {
+              email,
+              password,
+            })
+          );
           if (response.status == 201) {
             const data = response.data;
             setCookie("token", data?.token);
