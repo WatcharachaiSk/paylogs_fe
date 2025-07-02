@@ -18,8 +18,8 @@ function InputLogin() {
     const isSuccess = await login(userData.email, userData.password);
     if (isSuccess) {
       window.location.reload();
-    } else{
-      alert("รหัสผ่านผิด")
+    } else {
+      alert("รหัสผ่านผิด");
     }
   };
   return (

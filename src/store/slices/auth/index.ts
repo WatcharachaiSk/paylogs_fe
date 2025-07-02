@@ -40,6 +40,7 @@ export const useAuthStore = create<AuthState>()(
           }
         } catch (error) {
           deleteCookie("token");
+          // alert(`รหัสผ่านผิด ${process.env.NEXT_PUBLIC_API_URL}`);
           return false;
         }
       },

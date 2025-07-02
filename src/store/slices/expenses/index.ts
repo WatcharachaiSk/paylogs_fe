@@ -19,7 +19,6 @@ export const useExpenseStore = create<ExpenseState>((set) => ({
     try {
       const res = await axios(configAxios("get", API_PATHS.LOGS));
       if (res.status == 200) set({ expenses: res.data });
-      console.log("expenses is ", res.data);
     } catch (err) {
       console.error("Error fetching expenses:", err);
     }
