@@ -32,13 +32,14 @@ export const useAuthStore = create<AuthState>()(
           if (response.status == 201) {
             const data = response.data;
             setCookie("token", data?.token);
-            set({ token: data.token, user: data.name });
+            set({ user: data.name });
             return true;
           } else {
             deleteCookie("token");
             return false;
           }
         } catch (error) {
+          console.error("Error fetching expenses:", error);
           deleteCookie("token");
           // alert(`รหัสผ่านผิด ${process.env.NEXT_PUBLIC_API_URL}`);
           return false;
@@ -50,8 +51,8 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "auth-storage", // Key for localStorage
-      partialize: (state) => ({ token: state.token, user: state.user }), // Persist only token and user
+      name: "auth-storage",
+      partialize: (state) => ({ user: state.user }),
     }
   )
 );

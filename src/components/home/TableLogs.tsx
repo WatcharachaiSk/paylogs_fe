@@ -5,9 +5,14 @@ import Link from "next/link";
 import { useExpenseStore } from "@/store/slices";
 import { Expense } from "@/store/slices/expenses/types";
 import { GetIconComponent } from "../Icon/GetIconComponent";
-import { formatDateTimeToTH, formatToYMD } from "@/utils/date";
+import {
+  formatDateTimeToTH,
+  formatToYMD,
+  setLastDateByDay,
+} from "@/utils/date";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import InputLoading from "../loading/TableLoading";
 
 const ITEMS_PER_PAGE = 10;
 const SELECT_DATE = [
@@ -31,10 +36,9 @@ const SELECT_DATE = [
 //   }));
 // };
 
-export default function TableComponent() {
-  const { fetchExpenses, expenses } = useExpenseStore();
+const TableComponent = () => {
+  const { fetchExpenses, expenses, loading } = useExpenseStore();
 
-  // const [data, setData] = useState<Expense[]>(expenses);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -44,13 +48,17 @@ export default function TableComponent() {
   const [SelectDate, setSelectDate] = useState<{
     startDate: string | null;
     endDate: string | null;
-  } | null>(null);
+  } | null>({ startDate: setLastDateByDay(1), endDate: null });
   //
-  const [selectedOption, setSelectedOption] = useState("Last 7 days");
+  const [selectedOption, setSelectedOption] = useState("Last day");
+
+  // useEffect(() => {
+  //   fetchExpenses();
+  // }, []);
 
   useEffect(() => {
-    fetchExpenses();
-  }, []);
+    fetchExpenses(SelectDate?.startDate, SelectDate?.endDate);
+  }, [SelectDate]);
 
   const handleDropdownToggle = () => setDropdownOpen((prev) => !prev);
   const handleOptionSelect = (option: string) => {
@@ -95,6 +103,8 @@ export default function TableComponent() {
     });
 
     setSelectDate({ startDate: formattedStart, endDate: formattedEnd });
+    console.log("SelectDate is ", SelectDate);
+
     setStartDate(start);
     setEndDate(end);
   };
@@ -142,7 +152,7 @@ export default function TableComponent() {
   }
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg p-4">
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg p-2">
       <div className="flex justify-between items-center mb-4">
         {/* Search----------------------------------------------------------------------- */}
         <input
@@ -242,7 +252,7 @@ export default function TableComponent() {
                 selectsEnd
                 startDate={startDate}
                 endDate={endDate}
-                minDate={startDate}
+                minDate={startDate ? startDate : new Date()}
                 className="border border-gray-300 rounded px-2 py-1 text-sm w-full"
                 placeholderText="Select end date"
               />
@@ -284,57 +294,61 @@ export default function TableComponent() {
       {/*  */}
 
       {/* Item-------------------------------------------------------------------------- */}
-      <table className="w-full text-sm text-left text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-          <tr>
-            <th className="px-6 py-3">category</th>
-            <th className="px-6 py-3">Price</th>
-            <th className="px-6 py-3">description</th>
-            <th className="px-6 py-3">Date</th>
-            <th className="px-6 py-3">Action</th>
-          </tr>
-        </thead>
-        {/* List Item-------------------------------------------------------------------------- */}
-        <tbody>
-          {currentData.length > 0 ? (
-            currentData.map((item: Expense) => (
-              <tr key={item._id} className="bg-white  hover:bg-gray-50">
-                <td className="px-6 py-4 font-medium text-gray-900 ">
-                  <div className="flex">
-                    <GetIconComponent
-                      iconName={item?.category?.icon}
-                      size={20}
-                      style={{ marginRight: 8 }}
-                      color={item?.category?.color}
-                    />
-                    {item?.category?.name}
-                  </div>
-                </td>
-                <td className="px-6 py-4">{item?.amount}</td>
-                {/* <td className="px-6 py-4">{item?.amount}</td> */}
-                <td className="px-6 py-4">{item?.description}</td>
-                <td className="px-6 py-4">
-                  {formatDateTimeToTH(item?.createdAt)}
-                </td>
-                <td className="px-6 py-4">
-                  <Link
-                    href="#"
-                    className="text-blue-600 dark:text-blue-500 hover:underline"
-                  >
-                    Edit
-                  </Link>
+      {loading ? (
+        <InputLoading />
+      ) : (
+        <table className="w-full text-sm text-left text-gray-500">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th className="px-6 py-3">category</th>
+              <th className="px-6 py-3">Price</th>
+              <th className="px-6 py-3">description</th>
+              <th className="px-6 py-3">Date</th>
+              <th className="px-6 py-3">Action</th>
+            </tr>
+          </thead>
+          {/* List Item-------------------------------------------------------------------------- */}
+          <tbody>
+            {currentData.length > 0 ? (
+              currentData.map((item: Expense) => (
+                <tr key={item._id} className="bg-white  hover:bg-gray-50">
+                  <td className="px-6 py-4 font-medium text-gray-900 ">
+                    <div className="flex">
+                      <GetIconComponent
+                        iconName={item?.category?.icon}
+                        size={20}
+                        style={{ marginRight: 8 }}
+                        color={item?.category?.color}
+                      />
+                      {item?.category?.name}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">{item?.amount}</td>
+                  {/* <td className="px-6 py-4">{item?.amount}</td> */}
+                  <td className="px-6 py-4">{item?.description}</td>
+                  <td className="px-6 py-4">
+                    {formatDateTimeToTH(item?.createdAt)}
+                  </td>
+                  <td className="px-6 py-4">
+                    <Link
+                      href="#"
+                      className="text-blue-600 dark:text-blue-500 hover:underline"
+                    >
+                      Edit
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} className="text-center py-4 text-gray-500">
+                  Data Not Found
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={6} className="text-center py-4 text-gray-500">
-                Loading...
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      )}
 
       {/* Pagination */}
       {currentData.length > 0 && (
@@ -378,4 +392,6 @@ export default function TableComponent() {
       )}
     </div>
   );
-}
+};
+
+export default TableComponent;

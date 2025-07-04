@@ -28,3 +28,18 @@ export function formatToYMD(date: Date | null): string | null {
 
   return `${year}-${month}-${day}`;
 }
+
+export function setLastDateByDay(lastDate: number): string | null {
+  const today = new Date();
+  let start: Date | null = null;
+  start = new Date(today);
+  start.setDate(today.getDate() - lastDate);
+  return formatToYMD(start);
+}
+
+export function getCurrentDateTimeLocal() {
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  const local = new Date(now.getTime() - offset * 60 * 1000);
+  return local.toISOString().slice(0, 16);
+}

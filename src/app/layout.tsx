@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css"; // import global css ของโปรเจกต์
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import InputOut from "@/components/login/InputOut";
 import Link from "next/link";
 
@@ -14,7 +14,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body className="min-h-screen bg-gray-50 text-gray-800">
         <Header />
-        <main className="container mx-auto px-4 py-6">{children}</main>
+        <Suspense fallback={<p>Loading weather...</p>}>
+          <main className="container mx-auto px-4 py-6">{children}</main>
+        </Suspense>
         <Footer />
       </body>
     </html>
