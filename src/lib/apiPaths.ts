@@ -5,6 +5,8 @@ export const API_PATHS = {
   EXPENSE_BY_ID: (id: string) => `${apiUrl}/expenses/${id}`,
 
   LOGIN: `${apiUrl}/auth/login`,
-  LOGS: `${apiUrl}/logs/user`,
-  CATEGORIES: `${apiUrl}/categories`,
+  LOGS: `${apiUrl}/logs`,
+  LOGSEDIT: `${apiUrl}/logs/update`,
+  LOGSUSER: `${apiUrl}/logs/user`,
+  CATEGORIES: `${apiUrl}/category`,
 };

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useExpenseStore } from "@/store/slices";
+// import Link from "next/link";
+import { useCategoryStore, useExpenseStore } from "@/store/slices";
 import { Expense } from "@/store/slices/expenses/types";
-import { GetIconComponent } from "../Icon/GetIconComponent";
+import { GetIconComponent } from "../icon/GetIconComponent";
 import {
   formatDateTimeToTH,
   formatToYMD,
@@ -13,6 +13,8 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import InputLoading from "../loading/TableLoading";
+import _ from "lodash";
+import EditButton from "./EditButton";
 
 const ITEMS_PER_PAGE = 10;
 const SELECT_DATE = [
@@ -23,21 +25,9 @@ const SELECT_DATE = [
   "Custom range",
 ];
 
-// const generateMockData = (count: any) => {
-//   const categories = ["Laptop", "Tablet", "Accessories", "PC Desktop"];
-//   const colors = ["Silver", "Black", "White", "Gold"];
-
-//   return Array.from({ length: count }, (_, i) => ({
-//     id: i + 1,
-//     name: `Mock Product ${i + 1}`,
-//     color: colors[i % colors.length],
-//     category: categories[i % categories.length],
-//     price: `$${(Math.random() * 4000 + 100).toFixed(2)}`,
-//   }));
-// };
-
 const TableComponent = () => {
   const { fetchExpenses, expenses, loading } = useExpenseStore();
+  const { getCategories } = useCategoryStore();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,9 +42,9 @@ const TableComponent = () => {
   //
   const [selectedOption, setSelectedOption] = useState("Last day");
 
-  // useEffect(() => {
-  //   fetchExpenses();
-  // }, []);
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   useEffect(() => {
     fetchExpenses(SelectDate?.startDate, SelectDate?.endDate);
@@ -62,7 +52,7 @@ const TableComponent = () => {
 
   const handleDropdownToggle = () => setDropdownOpen((prev) => !prev);
   const handleOptionSelect = (option: string) => {
-    console.log("option is ", option);
+    // console.log("option is ", option);
     setSelectedOption(option);
     setDropdownOpen(false);
 
@@ -97,21 +87,31 @@ const TableComponent = () => {
     const formattedStart = formatToYMD(start);
     const formattedEnd = formatToYMD(end);
 
-    console.log("Selected Range:", {
-      start: formattedStart,
-      end: formattedEnd,
-    });
+    // console.log("Selected Range:", {
+    //   start: formattedStart,
+    //   end: formattedEnd,
+    // });
 
     setSelectDate({ startDate: formattedStart, endDate: formattedEnd });
-    console.log("SelectDate is ", SelectDate);
+    // console.log("SelectDate is ", SelectDate);
 
     setStartDate(start);
     setEndDate(end);
   };
 
-  const filteredData = expenses.filter((item: Expense) =>
-    item?.category?.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredData = expenses.filter((item: Expense) => {
+    if (
+      item?.category?.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ) {
+      return item?.category?.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+    } else {
+      return item?.description
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+    }
+  });
 
   const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -153,7 +153,7 @@ const TableComponent = () => {
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg p-2">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex-col md:flex-row xl:flex-row gap-y-2 flex justify-between items-center mb-4">
         {/* Search----------------------------------------------------------------------- */}
         <input
           type="text"
@@ -271,10 +271,10 @@ const TableComponent = () => {
                   const formattedStart = formatToYMD(startDate);
                   const formattedEnd = formatToYMD(endDate);
 
-                  console.log("Custom Range Selected:", {
-                    start: formattedStart,
-                    end: formattedEnd,
-                  });
+                  // console.log("Custom Range Selected:", {
+                  //   start: formattedStart,
+                  //   end: formattedEnd,
+                  // });
 
                   setDropdownOpen(false);
                   setSelectDate({
@@ -297,7 +297,7 @@ const TableComponent = () => {
       {loading ? (
         <InputLoading />
       ) : (
-        <table className="w-full text-sm text-left text-gray-500">
+        <table className="h-96 w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
               <th className="px-6 py-3">category</th>
@@ -310,7 +310,7 @@ const TableComponent = () => {
           {/* List Item-------------------------------------------------------------------------- */}
           <tbody>
             {currentData.length > 0 ? (
-              currentData.map((item: Expense) => (
+              _.map(currentData, (item: Expense) => (
                 <tr key={item._id} className="bg-white  hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-900 ">
                     <div className="flex">
@@ -327,15 +327,10 @@ const TableComponent = () => {
                   {/* <td className="px-6 py-4">{item?.amount}</td> */}
                   <td className="px-6 py-4">{item?.description}</td>
                   <td className="px-6 py-4">
-                    {formatDateTimeToTH(item?.createdAt)}
+                    {formatDateTimeToTH(item?.date)}
                   </td>
                   <td className="px-6 py-4">
-                    <Link
-                      href="#"
-                      className="text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Edit
-                    </Link>
+                    <EditButton item={item} />
                   </td>
                 </tr>
               ))

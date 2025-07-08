@@ -43,3 +43,15 @@ export function getCurrentDateTimeLocal() {
   const local = new Date(now.getTime() - offset * 60 * 1000);
   return local.toISOString().slice(0, 16);
 }
+
+export function formatDateToLocalInputString(
+  isoDateString: string | null
+): string {
+  const date = new Date(isoDateString ?? new Date());
+
+  // แปลงเวลาให้เป็นโซนเวลาท้องถิ่น (ไทยคือ UTC+7)
+  const tzOffset = date.getTimezoneOffset() * 60000; // เป็น milliseconds
+  const localDate = new Date(date.getTime() - tzOffset);
+
+  return localDate.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
+}

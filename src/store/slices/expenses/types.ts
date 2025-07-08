@@ -1,13 +1,5 @@
-interface Category {
-  _id: string;
-  name: string;
-  name_th: string;
-  icon: string;
-  color: string;
-  __v: number;
-}
+import { Category } from "../category/type";
 
-// ประเภทของรายการใช้จ่าย (expense)
 export interface Expense {
   _id: string;
   user: string;
@@ -19,4 +11,17 @@ export interface Expense {
   createdAt: string;
   updatedAt: string;
   __v: number;
+}
+export interface CreateExpense {
+  amount: number | string;
+  date: string;
+  description: string;
+  category: string;
+}
+export interface EditExpense {
+  id: string;
+  amount: number | string;
+  date: string;
+  description: string;
+  category: string;
 }

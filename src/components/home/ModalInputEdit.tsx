@@ -1,14 +1,14 @@
 "use client";
 import { useCategoryStore, useExpenseStore } from "@/store/slices";
 // import { Category } from "@/store/slices/category/type";
-
-import { getCurrentDateTimeLocal } from "@/utils/date";
+import { MdOutlineSaveAs } from "react-icons/md";
+import { formatDateToLocalInputString } from "@/utils/date";
 // import _ from "lodash";
 import { useEffect, useState } from "react";
 import CategorySelector from "./CategorySelector";
-import { CreateExpense } from "@/store/slices/expenses/types";
+import { EditExpense } from "@/store/slices/expenses/types";
 
-export default function ModalInput({
+export default function ModalInputEdit({
   isOpen,
   onClose,
 }: {
@@ -16,20 +16,22 @@ export default function ModalInput({
   onClose: () => void;
 }) {
   const { categories } = useCategoryStore();
-  const { createExpenses, loading } = useExpenseStore();
-  const [form, setForm] = useState<CreateExpense>({
-    amount: "",
+  const { expenseEdit, loading, editExpenses } = useExpenseStore();
+  const [form, setForm] = useState<EditExpense>({
+    id: "",
+    amount: 0,
     category: "",
     date: "",
     description: "",
   });
-
   useEffect(() => {
-    setForm((prev) => ({
-      ...prev,
-      date: getCurrentDateTimeLocal(),
-      category: categories[0]._id,
-    }));
+    setForm({
+      id: expenseEdit?._id ?? "",
+      amount: expenseEdit?.amount ?? "",
+      category: expenseEdit?.category._id ?? "",
+      date: formatDateToLocalInputString(expenseEdit?.date ?? null) ?? "",
+      description: expenseEdit?.description ?? "",
+    });
   }, []);
 
   const handleChange = (
@@ -46,9 +48,8 @@ export default function ModalInput({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // console.log("Created Product:", form);
-    await createExpenses(form);
-    // alert("Product created!");
+    // console.log("Edit Product:", form);
+    await editExpenses(form);
     onClose();
   };
 
@@ -60,9 +61,7 @@ export default function ModalInput({
         <div className="bg-white rounded-lg shadow-sm">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Create New Logs
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900">Edit Logs</h3>
             <button
               type="button"
               onClick={onClose}
@@ -156,20 +155,10 @@ export default function ModalInput({
             {/* Submit */}
             <button
               type="submit"
-              className="w-full flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5"
+              className="gap-x-3.5 w-full flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5"
             >
-              <svg
-                className="me-2 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Add new Log{" "}
+              <MdOutlineSaveAs size={20} />
+             Save Edit Log{" "}
               {loading == true && (
                 <svg
                   aria-hidden="true"
