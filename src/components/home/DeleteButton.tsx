@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
 import { Expense } from "@/store/slices/expenses/types";
-import ModalInputEdit from "./ModalInputEdit";
+import ModalInputDelete from "./ModalInputDelete";
 import { useExpenseStore } from "@/store/slices";
-import { TbEdit } from "react-icons/tb";
+import { MdDelete } from "react-icons/md";
 
-export default function EditButton({ item }: { item: Expense }) {
+export default function DeleteButton({ item }: { item: Expense }) {
   const { setExpenseEdit } = useExpenseStore();
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -18,14 +18,13 @@ export default function EditButton({ item }: { item: Expense }) {
           setIsOpen(true);
         }}
         type="button"
-        className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1 text-center me-2 mb-2"
+        className="hover:text-white border border-b-rose-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-1 py-1 text-center me-2 mb-2"
       >
-        {/* Edit */}
-        <TbEdit size={20} />
+        <MdDelete size={20} />
       </button>
       {/*  */}
       {isOpen && (
-        <ModalInputEdit isOpen={isOpen} onClose={() => setIsOpen(false)} />
+        <ModalInputDelete isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
     </div>
   );

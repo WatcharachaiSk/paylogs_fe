@@ -28,11 +28,11 @@ function Header() {
     <header className="bg-white shadow">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">PayLogs</h1>
-        <nav className="space-x-4">
+        <nav className="space-x-4 flex items-center">
           <Link href="/">Home</Link>
-          <a href="/login" className="hover:underline">
+          {/* <a href="/login" className="hover:underline">
             Login
-          </a>{" "}
+          </a>{" "} */}
           <InputOut />
         </nav>
       </div>

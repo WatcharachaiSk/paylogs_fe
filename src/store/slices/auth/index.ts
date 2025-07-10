@@ -9,6 +9,7 @@ interface AuthState {
   token: string | null;
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
+  loginGoogle: (token: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -19,10 +20,6 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       login: async (email, password) => {
         try {
-          // const response = await axios.post(API_PATHS.LOGIN, {
-          //   email,
-          //   password,
-          // });
           const response = await axios(
             configAxios("post", API_PATHS.LOGIN, {
               email,
@@ -39,16 +36,39 @@ export const useAuthStore = create<AuthState>()(
             return false;
           }
         } catch (error) {
-          console.error("Error fetching expenses:", error);
+          console.error("Error Login:", error);
           deleteCookie("token");
-          // alert(`รหัสผ่านผิด ${process.env.NEXT_PUBLIC_API_URL}`);
+          alert(`รหัสผ่านผิด: `);
+          return false;
+        }
+      },
+      loginGoogle: async (token: string) => {
+        try {
+          const response = await axios(
+            configAxios("post", API_PATHS.LOGINGOOGLE, { token })
+          );
+          if (response.status == 201) {
+            const data = response.data;
+            setCookie("token", data?.token);
+            set({ user: data.name });
+            return true;
+          } else {
+            deleteCookie("token");
+            return false;
+          }
+        } catch (error) {
+          console.error("Error Login Google:", error);
+          deleteCookie("token");
+          alert(
+            "ระบบไม่พร้อมใช้งาน Login Google Error : " + JSON.stringify(error)
+          );
           return false;
         }
       },
       logout: () => {
         set({ user: null });
         deleteCookie("token");
-        localStorage.clear()
+        localStorage.clear();
       },
     }),
     {

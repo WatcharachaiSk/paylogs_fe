@@ -5,16 +5,13 @@ import { useState, useEffect } from "react";
 import { useCategoryStore, useExpenseStore } from "@/store/slices";
 import { Expense } from "@/store/slices/expenses/types";
 import { GetIconComponent } from "../icon/GetIconComponent";
-import {
-  formatDateTimeToTH,
-  formatToYMD,
-  setLastDateByDay,
-} from "@/utils/date";
+import { formatDateTimeToTH, formatToYMD } from "@/utils/date";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import InputLoading from "../loading/TableLoading";
 import _ from "lodash";
 import EditButton from "./EditButton";
+import DeleteButton from "./DeleteButton";
 
 const ITEMS_PER_PAGE = 10;
 const SELECT_DATE = [
@@ -26,7 +23,8 @@ const SELECT_DATE = [
 ];
 
 const TableComponent = () => {
-  const { fetchExpenses, expenses, loading } = useExpenseStore();
+  const { fetchExpenses, expenses, loading, selectDate, setSelectDate } =
+    useExpenseStore();
   const { getCategories } = useCategoryStore();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,11 +33,6 @@ const TableComponent = () => {
   //
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [SelectDate, setSelectDate] = useState<{
-    startDate: string | null;
-    endDate: string | null;
-  } | null>({ startDate: setLastDateByDay(1), endDate: null });
-  //
   const [selectedOption, setSelectedOption] = useState("Last day");
 
   useEffect(() => {
@@ -47,8 +40,8 @@ const TableComponent = () => {
   }, []);
 
   useEffect(() => {
-    fetchExpenses(SelectDate?.startDate, SelectDate?.endDate);
-  }, [SelectDate]);
+    fetchExpenses(selectDate?.startDate, selectDate?.endDate);
+  }, [selectDate]);
 
   const handleDropdownToggle = () => setDropdownOpen((prev) => !prev);
   const handleOptionSelect = (option: string) => {
@@ -104,6 +97,12 @@ const TableComponent = () => {
       item?.category?.name.toLowerCase().includes(searchQuery.toLowerCase())
     ) {
       return item?.category?.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+    } else if (
+      _.toString(item?.amount).toLowerCase().includes(searchQuery.toLowerCase())
+    ) {
+      return _.toString(item?.amount)
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
     } else {
@@ -330,7 +329,10 @@ const TableComponent = () => {
                     {formatDateTimeToTH(item?.date)}
                   </td>
                   <td className="px-6 py-4">
-                    <EditButton item={item} />
+                    <div className="flex ">
+                      <EditButton item={item} />
+                      <DeleteButton item={item} />
+                    </div>
                   </td>
                 </tr>
               ))

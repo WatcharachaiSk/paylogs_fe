@@ -25,3 +25,12 @@ export interface EditExpense {
   description: string;
   category: string;
 }
+
+export interface DeleteExpense {
+  id: string;
+}
+
+export interface SelectDate {
+  startDate: string | null;
+  endDate: string | null;
+}

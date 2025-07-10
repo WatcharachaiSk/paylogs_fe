@@ -1,5 +1,11 @@
 "use client";
 import { useAuthStore } from "@/store/slices";
+import {
+  CredentialResponse,
+  GoogleLogin,
+  GoogleOAuthProvider,
+} from "@react-oauth/google";
+import _ from "lodash";
 import React, { useState } from "react";
 
 interface UserData {
@@ -8,7 +14,7 @@ interface UserData {
 }
 
 function InputLogin() {
-  const { login } = useAuthStore();
+  const { login, loginGoogle } = useAuthStore();
   const [userData, setUserData] = useState<UserData>({
     email: "",
     password: "",
@@ -20,6 +26,16 @@ function InputLogin() {
       window.location.reload();
     } else {
       alert("รหัสผ่านผิด");
+    }
+  };
+  const handleSuccess = async (response: CredentialResponse) => {
+    // const googleToken = response.credential;
+    if (_.isEmpty(response)) {
+      alert("ระบบไม่พร้อมใช้งาน Login Google Error : ");
+    }
+    const isSuccess = await loginGoogle(response?.credential ?? "");
+    if (isSuccess) {
+      window.location.reload();
     }
   };
   return (
@@ -78,7 +94,9 @@ function InputLogin() {
           </div>
           <div className="text-sm">
             <a
-              href="jajvascript:void(0);"
+              onClick={() => {
+                alert("ระบบยังไม่เปิดใช้งาน!");
+              }}
               className="text-blue-600 hover:text-blue-500 font-medium"
             >
               Forgot your password?
@@ -104,7 +122,15 @@ function InputLogin() {
 
       <div className="space-x-6 flex justify-center">
         <button type="button" className="border-none outline-none">
-          <svg
+          <GoogleOAuthProvider
+            clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+          >
+            <GoogleLogin
+              onSuccess={handleSuccess}
+              onError={() => console.log("Fail")}
+            />
+          </GoogleOAuthProvider>
+          {/* <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-6 h-6"
             viewBox="0 0 512 512"
@@ -139,7 +165,7 @@ function InputLogin() {
               d="M256 120V0C187.62 0 123.333 26.629 74.98 74.98a259.849 259.849 0 0 0-22.158 25.235l86.308 86.308C162.883 146.72 206.376 120 256 120z"
               data-original="#eb4132"
             />
-          </svg>
+          </svg> */}
         </button>
         {/* <button type="button" className="border-none outline-none">
         <svg
