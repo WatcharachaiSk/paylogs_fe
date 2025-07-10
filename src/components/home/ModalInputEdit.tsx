@@ -32,7 +32,7 @@ export default function ModalInputEdit({
       date: formatDateToLocalInputString(expenseEdit?.date ?? null) ?? "",
       description: expenseEdit?.description ?? "",
     });
-  }, []);
+  }, [expenseEdit]);
 
   const handleChange = (
     e: React.ChangeEvent<

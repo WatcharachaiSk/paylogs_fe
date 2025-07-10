@@ -30,7 +30,7 @@ export default function ModalInput({
       date: getCurrentDateTimeLocal(),
       category: categories[0]._id,
     }));
-  }, []);
+  }, [categories]);
 
   const handleChange = (
     e: React.ChangeEvent<

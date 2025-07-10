@@ -37,11 +37,11 @@ const TableComponent = () => {
 
   useEffect(() => {
     getCategories();
-  }, []);
+  }, [getCategories]);
 
   useEffect(() => {
     fetchExpenses(selectDate?.startDate, selectDate?.endDate);
-  }, [selectDate]);
+  }, [fetchExpenses, selectDate]);
 
   const handleDropdownToggle = () => setDropdownOpen((prev) => !prev);
   const handleOptionSelect = (option: string) => {
