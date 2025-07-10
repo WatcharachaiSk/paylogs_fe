@@ -8,10 +8,10 @@ import {
   ListboxOption,
   ListboxOptions,
 } from "@headlessui/react";
-import { GetIconComponent } from "../icon/GetIconComponent";
 import { HiOutlineCheck, HiOutlineChevronDown } from "react-icons/hi";
 import { Category } from "@/store/slices/category/type";
 import _ from "lodash";
+import { GetIconComponent } from "../setIcon/GetIconComponent";
 // import { ChevronUpDownIcon } from '@heroicons/react/16/solid'
 // import { CheckIcon } from '@heroicons/react/20/solid'
 
