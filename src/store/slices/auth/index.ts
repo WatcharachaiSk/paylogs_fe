@@ -4,6 +4,7 @@ import axios from "axios";
 import { setCookie, deleteCookie } from "cookies-next";
 import { API_PATHS } from "@/lib/apiPaths";
 import configAxios from "@/lib/configAxios";
+import { User } from "./types";
 
 interface AuthState {
   token: string | null;
