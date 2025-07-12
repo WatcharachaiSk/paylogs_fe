@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import "./globals.css"; // import global css ของโปรเจกต์
+import "./globals.css";
 import { ReactNode, Suspense } from "react";
 import InputOut from "@/components/login/InputOut";
 import Link from "next/link";
+import SidebarToggleLayout from "@/components/layout/Sidebar";
 
 export const metadata: Metadata = {
   title: "PayLogs",
@@ -15,7 +16,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen bg-gray-50 text-gray-800">
         <Header />
         <Suspense fallback={<p>Loading weather...</p>}>
-          <main className="container mx-auto px-4 py-6">{children}</main>
+          <main className="container mx-auto px-1 py-1">
+            <SidebarToggleLayout>{children}</SidebarToggleLayout>
+          </main>
         </Suspense>
         <Footer />
       </body>

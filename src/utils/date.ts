@@ -6,7 +6,7 @@ export function formatDateToDDMMYY(dateString: string): string {
   return `${day}${month}${year}`;
 }
 
-export function formatDateTimeToTH(dateString: string): string {
+export function formatDateTimeToUTC(dateString: string): string {
   const date = new Date(dateString);
 
   const day = String(date.getDate()).padStart(2, "0");
@@ -17,6 +17,22 @@ export function formatDateTimeToTH(dateString: string): string {
   const minutes = String(date.getMinutes()).padStart(2, "0");
 
   return `${hours}:${minutes} ${day}/${month}/${year}`;
+}
+
+export function formatDateTimeToTH(dateString: string): string {
+  const date = new Date(dateString);
+  date.setHours(date.getHours() - 7);
+
+  const options: Intl.DateTimeFormatOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Bangkok",
+  };
+  return new Intl.DateTimeFormat("th-TH", options).format(date);
 }
 
 export function formatToYMD(date: Date | null): string | null {
@@ -48,6 +64,7 @@ export function formatDateToLocalInputString(
   isoDateString: string | null
 ): string {
   const date = new Date(isoDateString ?? new Date());
+  date.setHours(date.getHours() - 7);
 
   // แปลงเวลาให้เป็นโซนเวลาท้องถิ่น (ไทยคือ UTC+7)
   const tzOffset = date.getTimezoneOffset() * 60000; // เป็น milliseconds
