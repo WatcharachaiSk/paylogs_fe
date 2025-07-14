@@ -1,5 +1,9 @@
 import { Category } from "../category/type";
 
+export interface GetExpense {
+  data: Expense[];
+  sumAmount: number;
+}
 export interface Expense {
   _id: string;
   user: string;

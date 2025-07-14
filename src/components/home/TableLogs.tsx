@@ -12,9 +12,11 @@ import _ from "lodash";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import { GetIconComponent } from "../setIcon/GetIconComponent";
+import { formatNumber } from "@/utils/number";
 
 const ITEMS_PER_PAGE = 10;
 const SELECT_DATE = [
+  "Today",
   "Last day",
   "Last 7 days",
   "Last 30 days",
@@ -33,7 +35,7 @@ const TableComponent = () => {
   //
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [selectedOption, setSelectedOption] = useState("Last day");
+  const [selectedOption, setSelectedOption] = useState(SELECT_DATE[0]);
 
   useEffect(() => {
     getCategories();
@@ -54,9 +56,15 @@ const TableComponent = () => {
     let end: Date | null = new Date();
 
     switch (option) {
+      case "Today":
+        start = new Date(today);
+        start.setDate(today.getDate());
+        end.setDate(today.getDate());
+        break;
       case "Last day":
         start = new Date(today);
         start.setDate(today.getDate() - 1);
+        end.setDate(today.getDate() - 1);
         break;
       case "Last 7 days":
         start = new Date(today);
@@ -92,7 +100,7 @@ const TableComponent = () => {
     setEndDate(end);
   };
 
-  const filteredData = expenses.filter((item: Expense) => {
+  const filteredData = _.filter(expenses?.data, (item: Expense) => {
     if (
       item?.category?.name.toLowerCase().includes(searchQuery.toLowerCase())
     ) {
@@ -111,7 +119,6 @@ const TableComponent = () => {
         .includes(searchQuery.toLowerCase());
     }
   });
-
   const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentData = filteredData.slice(
@@ -322,9 +329,13 @@ const TableComponent = () => {
                       {item?.category?.name}
                     </div>
                   </td>
-                  <td className="px-6 py-4">{item?.amount}</td>
+                  <td className="px-6 py-4">
+                    {formatNumber(item?.amount) ?? ""}
+                  </td>
                   {/* <td className="px-6 py-4">{item?.amount}</td> */}
-                  <td className="px-6 py-4">{item?.description}</td>
+                  <td className="px-6 py-4 text-blue-600">
+                    {item?.description}
+                  </td>
                   <td className="px-6 py-4">
                     {formatDateTimeToTH(item?.date)}
                   </td>
@@ -344,6 +355,17 @@ const TableComponent = () => {
               </tr>
             )}
           </tbody>
+          <tfoot>
+            <tr className="font-semibold text-gray-900 bg-gray-100">
+              <td className="px-6 py-4" colSpan={1}>
+                Total
+              </td>
+              <td className="px-6 py-4">
+                ฿ {formatNumber(expenses?.sumAmount) ?? ""}
+              </td>
+              <td colSpan={3}></td>
+            </tr>
+          </tfoot>
         </table>
       )}
 
