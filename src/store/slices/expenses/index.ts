@@ -4,6 +4,7 @@ import {
   DeleteExpense,
   EditExpense,
   Expense,
+  GetExpense,
   SelectDate,
 } from "./types";
 import axios from "axios";
@@ -17,10 +18,10 @@ import { deleteCookie } from "cookies-next";
 // Zustand store interface
 interface ExpenseState {
   loading: boolean;
-  expenses: Expense[];
+  expenses: GetExpense | null;
   expenseEdit: Expense | null;
   selectDate: SelectDate;
-  setExpenses: (expenses: Expense[]) => void;
+  setExpenses: (expenses: GetExpense) => void;
   setSelectDate: (selectDate: SelectDate) => void;
   setExpenseEdit: (expenses: Expense) => void;
   fetchExpenses: (start?: string | null, end?: string | null) => Promise<void>;
@@ -31,9 +32,9 @@ interface ExpenseState {
 
 export const useExpenseStore = create<ExpenseState>((set, get) => ({
   loading: false,
-  expenses: [],
+  expenses: null,
   expenseEdit: null,
-  selectDate: { startDate: setLastDateByDay(1), endDate: null },
+  selectDate: { startDate: setLastDateByDay(0), endDate: setLastDateByDay(0) },
   setExpenses: (expenses) => set({ expenses }),
   setExpenseEdit: (expenseEdit) => set({ expenseEdit }),
   setSelectDate: (selectDate) => set({ selectDate }),
@@ -49,7 +50,7 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       const res = await axios(configAxios("get", path));
       if (res.status == 200) set({ expenses: res.data });
     } catch (error: any) {
-      set({ expenses: [] });
+      set({ expenses: null });
       console.error("Error fetching expenses:", error);
       if (error?.status == 404) {
         toast("ไม่พบ logs ของวันที่ค้นหา", {
