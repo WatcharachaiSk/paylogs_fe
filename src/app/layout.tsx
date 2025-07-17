@@ -4,6 +4,7 @@ import { ReactNode, Suspense } from "react";
 import InputOut from "@/components/login/InputOut";
 import Link from "next/link";
 import SidebarToggleLayout from "@/components/layout/Sidebar";
+import "react-datepicker/dist/react-datepicker.css";
 
 export const metadata: Metadata = {
   title: "PayLogs",

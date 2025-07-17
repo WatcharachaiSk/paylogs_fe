@@ -6,23 +6,16 @@ import { useCategoryStore, useExpenseStore } from "@/store/slices";
 import { Expense } from "@/store/slices/expenses/types";
 import { formatDateTimeToTH, formatToYMD } from "@/utils/date";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+
 import InputLoading from "../loading/TableLoading";
 import _ from "lodash";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import { GetIconComponent } from "../setIcon/GetIconComponent";
 import { formatNumber } from "@/utils/number";
+import { SELECT_DATE } from "@/lib/constants";
 
 const ITEMS_PER_PAGE = 10;
-const SELECT_DATE = [
-  "Today",
-  "Last day",
-  "Last 7 days",
-  "Last 30 days",
-  "Last 1 year",
-  "Custom range",
-];
 
 const TableComponent = () => {
   const { fetchExpenses, expenses, loading, selectDate, setSelectDate } =
@@ -36,6 +29,7 @@ const TableComponent = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedOption, setSelectedOption] = useState(SELECT_DATE[0]);
+  const [sumAmount, setSumAmount] = useState<number | null>(null);
 
   useEffect(() => {
     getCategories();
@@ -125,6 +119,13 @@ const TableComponent = () => {
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
+
+  useEffect(() => {
+    // console.log("currentData is ", currentData);
+    // console.log("filteredData is ", filteredData);
+    if (!_.isEmpty(currentData)) setSumAmount(_.sumBy(filteredData, "amount"));
+    else return setSumAmount(0);
+  }, [currentData, filteredData]);
 
   function getPageNumbers(current: number, total: number): (number | string)[] {
     const delta = 2;
@@ -361,7 +362,9 @@ const TableComponent = () => {
                 Total
               </td>
               <td className="px-6 py-4">
-                ฿ {formatNumber(expenses?.sumAmount) ?? ""}
+                {sumAmount != null
+                  ? formatNumber(sumAmount)
+                  : formatNumber(expenses?.sumAmount) ?? ""}
               </td>
               <td colSpan={3}></td>
             </tr>

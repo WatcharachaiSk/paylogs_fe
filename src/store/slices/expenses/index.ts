@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import {
   CreateExpense,
+  DataDashboard,
   DeleteExpense,
   EditExpense,
   Expense,
@@ -20,11 +21,17 @@ interface ExpenseState {
   loading: boolean;
   expenses: GetExpense | null;
   expenseEdit: Expense | null;
+  dataDashboard: DataDashboard | null;
   selectDate: SelectDate;
   setExpenses: (expenses: GetExpense) => void;
+  setDataDashboard: (dataDashboard: DataDashboard) => void;
   setSelectDate: (selectDate: SelectDate) => void;
   setExpenseEdit: (expenses: Expense) => void;
   fetchExpenses: (start?: string | null, end?: string | null) => Promise<void>;
+  fetchDataDashboard: (
+    start?: string | null,
+    end?: string | null
+  ) => Promise<void>;
   createExpenses: (payload: CreateExpense) => void;
   editExpenses: (payload: EditExpense) => void;
   deleteExpenses: (payload: DeleteExpense) => void;
@@ -34,8 +41,10 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   loading: false,
   expenses: null,
   expenseEdit: null,
+  dataDashboard: null,
   selectDate: { startDate: setLastDateByDay(0), endDate: setLastDateByDay(0) },
   setExpenses: (expenses) => set({ expenses }),
+  setDataDashboard: (dataDashboard) => set({ dataDashboard }),
   setExpenseEdit: (expenseEdit) => set({ expenseEdit }),
   setSelectDate: (selectDate) => set({ selectDate }),
   fetchExpenses: async (start?: string | null, end?: string | null) => {
@@ -64,7 +73,39 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
         localStorage.clear();
         location.reload();
       } else {
-        alert("Error Create expenses: " + JSON.stringify(error));
+        alert("Error fetching expenses: " + JSON.stringify(error));
+      }
+    } finally {
+      set({ loading: false });
+    }
+  },
+  fetchDataDashboard: async (start?: string | null, end?: string | null) => {
+    set({ loading: true });
+    try {
+      let path = API_PATHS.LOGSDASHBOARD;
+      if (start || end) {
+        path = `${API_PATHS.LOGSDASHBOARD}?stDate=${start ? start : ""}&${
+          end ? `endDate=${end}` : ""
+        }`;
+      }
+      const res = await axios(configAxios("get", path));
+      if (res.status == 200) set({ dataDashboard: res.data });
+    } catch (error: any) {
+      set({ dataDashboard: null });
+      console.error("Error fetching Data Dashboard:", error);
+      if (error?.status == 404) {
+        toast("ไม่พบ Data Dashboard ของวันที่ค้นหา", {
+          duration: 10000,
+        });
+      } else if (error?.status == 401) {
+        toast(" กรุณาทำการ login ใหม่", {
+          duration: 10000,
+        });
+        deleteCookie("token");
+        localStorage.clear();
+        location.reload();
+      } else {
+        alert("Error Data Dashboard: " + JSON.stringify(error));
       }
     } finally {
       set({ loading: false });

@@ -38,3 +38,16 @@ export interface SelectDate {
   startDate: string | null;
   endDate: string | null;
 }
+
+export interface DataDashboard {
+  data: CategoryData[];
+  sumAmount: number;
+}
+
+export interface CategoryData {
+  _id: string;
+  totalAmount: number;
+  count: number;
+  expenses: Expense[];
+  categoryInfo: Category;
+}
