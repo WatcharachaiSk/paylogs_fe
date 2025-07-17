@@ -9,13 +9,8 @@ import DatePicker from "react-datepicker";
 // import _ from "lodash";
 
 export default function ItemDashboard() {
-  const {
-    fetchDataDashboard,
-    dataDashboard,
-    loading,
-    selectDate,
-    setSelectDate,
-  } = useExpenseStore();
+  const { fetchDataDashboard, dataDashboard, selectDate, setSelectDate } =
+    useExpenseStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleDropdownToggle = () => setDropdownOpen((prev) => !prev);
