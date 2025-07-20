@@ -3,11 +3,12 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Doughnut } from "react-chartjs-2";
-import { Chart } from "chart.js";
+// import { Chart } from "chart.js";
 import { useExpenseStore } from "@/store/slices";
 import { useEffect, useState } from "react";
 import _ from "lodash";
 import { CategoryData } from "@/store/slices/expenses/types";
+import { formatNumber } from "@/utils/number";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 interface DataDoughnut {
@@ -61,45 +62,44 @@ export default function DoughnutChart() {
     plugins: {
       legend: {
         labels: {
-          font: {
-            size: 12,
-          },
+          font: { size: 10 },
         },
       },
       datalabels: {
         color: "#000",
-        font: {
-          size: 12,
+        font: { size: 10 },
+        formatter: (value: number, context: any) => {
+          const chart = context.chart;
+          const dataset = chart.data.datasets[0];
+          const meta = chart.getDatasetMeta(0);
+
+          const totalVisible = dataset.data.reduce((sum: number, val: number, i: number) => {
+            return !meta.data[i].hidden ? sum + val : sum;
+          }, 0);
+
+          const percent = totalVisible === 0 ? 0 : (value / totalVisible) * 100;
+          return `${percent.toFixed(1)}%`;
         },
-        formatter: (value: number) => value.toLocaleString(),
       },
       tooltip: {
         callbacks: {
           label: (tooltipItem: any) => {
-            return `${
-              tooltipItem.label
-            }: ${tooltipItem.raw.toLocaleString()} บาท`;
+            const chart = tooltipItem.chart;
+            const dataset = chart.data.datasets[0];
+            const meta = chart.getDatasetMeta(0);
+
+            const totalVisible = dataset.data.reduce((sum: number, val: number, i: number) => {
+              return !meta.data[i].hidden ? sum + val : sum;
+            }, 0);
+
+            const value = tooltipItem.raw;
+            const percent = totalVisible === 0 ? 0 : (value / totalVisible) * 100;
+            return `${tooltipItem.label}: ${formatNumber(value)} บาท (${percent.toFixed(1)}%)`;
           },
         },
       },
     },
   };
 
-  // 👇 Plugin เสริม แสดงข้อความตรงกลาง
-  const centerTextPlugin = {
-    id: "centerText",
-    beforeDraw(chart: Chart) {
-      const { width, height, ctx } = chart;
-      const text = chart?.options?.plugins?.centerText?.text ?? "";
-      ctx.save();
-      ctx.font = "16px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillStyle = "#000";
-      ctx.fillText(text, width / 2, height / 2);
-      ctx.restore();
-    },
-  };
-  return (
-    <Doughnut data={data} options={options} plugins={[centerTextPlugin]} />
-  );
+  return <Doughnut data={data} options={options} />;
 }
