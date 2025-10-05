@@ -109,9 +109,9 @@ export default function ItemDashboard() {
         </div>
       </div>
       {/* DatePicker */}
-      <div className="flex justify-end">
+      <div className="flex justify-end p-2">
         {selectedOption === "Custom range" && (
-          <div className="space-x-2 flex items-end">
+          <div className=" space-x-2 flex flex-col w-full justify-center">
             <div className="flex flex-col">
               <label className="text-sm font-medium mb-1 text-gray-700">Start date</label>
               <DatePicker selected={startDate} onChange={(date: Date | null) => setStartDate(date)} selectsStart startDate={startDate} endDate={endDate} className="border border-gray-300 rounded px-2 py-1 text-sm w-full" placeholderText="Select start date" />
@@ -123,7 +123,7 @@ export default function ItemDashboard() {
             </div>
 
             {/* ปุ่ม Apply */}
-            <div className="justify-end">
+            <div className="flex my-2 justify-end">
               <button
                 className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
                 onClick={() => {
