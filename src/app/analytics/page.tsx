@@ -5,7 +5,7 @@ import {
   TbTrendingUp, 
   TbTrendingDown, 
   TbWallet, 
-  TbPiggybank, 
+  TbPigMoney, 
   TbChartBar, 
   TbCalendarStats,
   TbArrowUpRight,
@@ -19,7 +19,7 @@ export default function AnalyticsPage() {
     { label: "รายรับรวม", value: "฿50,000", sub: "+12% จากเดือนก่อน", subColor: "text-[#2d6a4f]", icon: TbTrendingUp, iconBg: "bg-[#d8f3dc]", iconColor: "text-[#2d6a4f]" },
     { label: "รายจ่ายรวม", value: "฿32,450", sub: "+5% จากเดือนก่อน", subColor: "text-[#c1121f]", icon: TbTrendingDown, iconBg: "bg-[#ffe8e8]", iconColor: "text-[#c1121f]" },
     { label: "ยอดคงเหลือ", value: "฿17,550", sub: "เดือนนี้", subColor: "text-[#a8a49c]", icon: TbWallet, iconBg: "bg-[#e8f0fb]", iconColor: "text-[#1a4f8a]" },
-    { label: "Saving Rate", value: "35.1%", sub: "เป้าหมาย 30%", subColor: "text-[#2d6a4f]", icon: TbPiggybank, iconBg: "bg-[#fff0df]", iconColor: "text-[#b5540a]" },
+    { label: "Saving Rate", value: "35.1%", sub: "เป้าหมาย 30%", subColor: "text-[#2d6a4f]", icon: TbPigMoney, iconBg: "bg-[#fff0df]", iconColor: "text-[#b5540a]" },
   ];
 
   const categories = [
