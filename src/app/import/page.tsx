@@ -14,7 +14,8 @@ import {
   TbAlertTriangle, 
   TbCircleX,
   TbInfoCircle,
-  TbFileUpload
+  TbFileUpload,
+  TbTemplate
 } from "react-icons/tb";
 import { useExpenseStore } from "@/store/slices";
 import toast from "react-hot-toast";
@@ -50,6 +51,31 @@ export default function ImportPage() {
     }
   };
 
+  const downloadTemplate = () => {
+    const headers = ["date", "title", "amount", "category", "type"];
+    const sampleData = [
+      ["2026-05-01", "เงินเดือน", "50000", "Salary", "income"],
+      ["2026-05-02", "Starbucks", "185", "Food", "expense"],
+      ["2026-05-03", "ค่าเช่าบ้าน", "8000", "Housing", "expense"],
+    ];
+
+    const csvContent = [
+      headers.join(","),
+      ...sampleData.map(row => row.join(","))
+    ].join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "paylogs_template.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("ดาวน์โหลดเทมเพลตเรียบร้อย");
+  };
+
   return (
     <div className="space-y-8 font-['DM_Sans',sans-serif]">
       {/* STEPPER */}
@@ -76,6 +102,16 @@ export default function ImportPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {/* LEFT COLUMN: UPLOAD */}
         <div className="space-y-4">
+          <div className="flex justify-end">
+            <button 
+              onClick={downloadTemplate}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#e8e4dc] bg-white text-[12px] text-[#6b6b6b] hover:bg-[#f7f5f0] transition-all"
+            >
+              <TbTemplate size={16} />
+              ดาวน์โหลดเทมเพลต (.csv)
+            </button>
+          </div>
+          
           <div 
             className={`border-2 border-dashed rounded-[14px] p-10 text-center bg-[#f7f5f0] transition-all
               ${isUploading ? "opacity-50 pointer-events-none" : "hover:border-[#a8a49c] hover:bg-[#f0ede6] cursor-pointer"}`}
