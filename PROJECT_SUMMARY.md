@@ -4,7 +4,7 @@
 
 ## 🛠 เทคโนโลยีที่ใช้ (Tech Stack)
 
-- **Framework**: Next.js 15.3.1 (App Router)
+- **Framework**: Next.js 15.5.18 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS 4 (รุ่นล่าสุด)
 - **State Management**: Zustand (จัดการ State ของ Auth, Expenses, Categories)
