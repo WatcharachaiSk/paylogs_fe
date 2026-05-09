@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, ReactNode } from "react";
-import { TbLayoutDashboard, TbArrowsExchange, TbMenu2, TbTablePlus, TbFileImport } from "react-icons/tb";
+import { 
+  TbLayoutDashboard, 
+  TbArrowsExchange, 
+  TbMenu2, 
+  TbTablePlus, 
+  TbFileImport, 
+  TbChartBar, 
+  TbRepeat 
+} from "react-icons/tb";
 import { useAuthStore } from "@/store/slices";
 import InputOut from "../login/InputOut";
 
@@ -19,6 +27,8 @@ export default function SidebarToggleLayout({ children }: { children: ReactNode 
     { name: "Transactions", href: "/", icon: TbArrowsExchange },
     { name: "Bulk Add", href: "/bulk", icon: TbTablePlus },
     { name: "Import", href: "/import", icon: TbFileImport },
+    { name: "Analytics", href: "/analytics", icon: TbChartBar },
+    { name: "Recurring", href: "/recurring", icon: TbRepeat },
   ];
 
   const getPageTitle = () => {
@@ -31,6 +41,10 @@ export default function SidebarToggleLayout({ children }: { children: ReactNode 
         return "Bulk Add";
       case "/import":
         return "Import";
+      case "/analytics":
+        return "Analytics";
+      case "/recurring":
+        return "Recurring";
       default:
         return "PayLogs";
     }
@@ -39,6 +53,8 @@ export default function SidebarToggleLayout({ children }: { children: ReactNode 
   const getPageSub = () => {
     if (pathname === "/bulk") return "เพิ่มหลายรายการพร้อมกัน";
     if (pathname === "/import") return "นำเข้าจาก Excel / Google Sheets";
+    if (pathname === "/analytics") return "วิเคราะห์และเจาะลึกการเงิน";
+    if (pathname === "/recurring") return "จัดการรายการที่ต้องจ่ายประจำ";
     const today = new Date();
     const monthYear = today.toLocaleDateString("th-TH", { month: "long", year: "numeric" });
     return monthYear;

@@ -38,8 +38,22 @@ export default function ModalInput({ isOpen, onClose }: { isOpen: boolean; onClo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const finalAmount = type === "expense" ? -Math.abs(Number(form.amount)) : Math.abs(Number(form.amount));
-    await createExpenses({ ...form, amount: finalAmount });
+    
+    // Convert to number explicitly
+    const amountVal = parseFloat(String(form.amount));
+    if (isNaN(amountVal)) return;
+
+    // Determine sign based on type
+    const finalAmount = type === "expense" ? -Math.abs(amountVal) : Math.abs(amountVal);
+    
+    // Create payload
+    const payload: CreateExpense = {
+      ...form,
+      amount: finalAmount
+    };
+
+    console.log("Submitting Create Expense:", payload);
+    await createExpenses(payload);
     onClose();
   };
 
@@ -51,8 +65,8 @@ export default function ModalInput({ isOpen, onClose }: { isOpen: boolean; onClo
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={onClose} />
       
       {/* MODAL */}
-      <div className="relative w-full max-w-[380px] bg-white rounded-[14px] shadow-2xl border border-flow overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="p-6">
+      <div className="relative w-full max-w-[380px] max-h-[calc(100vh-2rem)] bg-white rounded-[14px] shadow-2xl border border-flow flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-flow-ink3 scrollbar-track-transparent">
           <div className="flex justify-between items-start mb-1">
             <h2 className="text-[20px] font-display text-flow-ink">Add Transaction</h2>
             <button onClick={onClose} className="text-flow-ink3 hover:text-flow-ink transition-colors">

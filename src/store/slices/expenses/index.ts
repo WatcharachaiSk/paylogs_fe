@@ -1,13 +1,5 @@
 import { create } from "zustand";
-import {
-  CreateExpense,
-  DataDashboard,
-  DeleteExpense,
-  EditExpense,
-  Expense,
-  GetExpense,
-  SelectDate,
-} from "./types";
+import { CreateExpense, DataDashboard, DeleteExpense, EditExpense, Expense, GetExpense, SelectDate } from "./types";
 import axios from "axios";
 import configAxios from "@/lib/configAxios";
 import { API_PATHS } from "@/lib/apiPaths";
@@ -28,10 +20,7 @@ interface ExpenseState {
   setSelectDate: (selectDate: SelectDate) => void;
   setExpenseEdit: (expenses: Expense) => void;
   fetchExpenses: (start?: string | null, end?: string | null) => Promise<void>;
-  fetchDataDashboard: (
-    start?: string | null,
-    end?: string | null
-  ) => Promise<void>;
+  fetchDataDashboard: (start?: string | null, end?: string | null) => Promise<void>;
   createExpenses: (payload: CreateExpense) => void;
   createBulkExpenses: (payload: CreateExpense[]) => Promise<boolean>;
   importExpenses: (file: File) => Promise<boolean>;
@@ -45,18 +34,16 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   expenseEdit: null,
   dataDashboard: null,
   selectDate: { startDate: setLastDateByDay(0), endDate: setLastDateByDay(0) },
-  setExpenses: (expenses) => set({ expenses }),
-  setDataDashboard: (dataDashboard) => set({ dataDashboard }),
-  setExpenseEdit: (expenseEdit) => set({ expenseEdit }),
-  setSelectDate: (selectDate) => set({ selectDate }),
+  setExpenses: expenses => set({ expenses }),
+  setDataDashboard: dataDashboard => set({ dataDashboard }),
+  setExpenseEdit: expenseEdit => set({ expenseEdit }),
+  setSelectDate: selectDate => set({ selectDate }),
   fetchExpenses: async (start?: string | null, end?: string | null) => {
     set({ loading: true });
     try {
       let path = API_PATHS.LOGSUSER;
       if (start || end) {
-        path = `${API_PATHS.LOGSUSER}?stDate=${start ? start : ""}&${
-          end ? `endDate=${end}` : ""
-        }`;
+        path = `${API_PATHS.LOGSUSER}?stDate=${start ? start : ""}&${end ? `endDate=${end}` : ""}`;
       }
       const res = await axios(configAxios("get", path));
       if (res.status == 200) set({ expenses: res.data });
@@ -84,9 +71,7 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
     try {
       let path = API_PATHS.LOGSDASHBOARD;
       if (start || end) {
-        path = `${API_PATHS.LOGSDASHBOARD}?stDate=${start ? start : ""}&${
-          end ? `endDate=${end}` : ""
-        }`;
+        path = `${API_PATHS.LOGSDASHBOARD}?stDate=${start ? start : ""}&${end ? `endDate=${end}` : ""}`;
       }
       const res = await axios(configAxios("get", path));
       if (res.status == 200) set({ dataDashboard: res.data });
@@ -116,10 +101,7 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       const res = await axios(configAxios("post", API_PATHS.LOGS, payload));
       if (res.status == 201) {
         toast.success("บันทึกข้อมูลเรียบร้อย!");
-        get().fetchExpenses(
-          get().selectDate.startDate,
-          get().selectDate.endDate
-        );
+        get().fetchExpenses(get().selectDate.startDate, get().selectDate.endDate);
       }
     } catch (error: unknown) {
       console.error("Error Create expenses:", error);
@@ -140,10 +122,7 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       const res = await axios(configAxios("post", `${API_PATHS.LOGS}/bulk`, formattedPayload));
       if (res.status == 201) {
         toast.success(`บันทึกสำเร็จ ${payload.length} รายการ!`);
-        get().fetchExpenses(
-          get().selectDate.startDate,
-          get().selectDate.endDate
-        );
+        get().fetchExpenses(get().selectDate.startDate, get().selectDate.endDate);
         return true;
       }
       return false;
@@ -161,16 +140,15 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await axios(configAxios("post", API_PATHS.LOGSIMPORT, formData, {
-        "Content-Type": "multipart/form-data",
-      }));
+      const res = await axios(
+        configAxios("post", API_PATHS.LOGSIMPORT, formData, {
+          "Content-Type": "multipart/form-data",
+        })
+      );
 
       if (res.status == 201 || res.status == 200) {
         toast.success("นำเข้าข้อมูลสำเร็จ!");
-        get().fetchExpenses(
-          get().selectDate.startDate,
-          get().selectDate.endDate
-        );
+        get().fetchExpenses(get().selectDate.startDate, get().selectDate.endDate);
         return true;
       }
       return false;
@@ -189,10 +167,7 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       const res = await axios(configAxios("post", API_PATHS.LOGSEDIT, payload));
       if (res.status == 201) {
         toast.success("แก้ไขข้อมูลเรียบร้อย!");
-        get().fetchExpenses(
-          get().selectDate.startDate,
-          get().selectDate.endDate
-        );
+        get().fetchExpenses(get().selectDate.startDate, get().selectDate.endDate);
       }
     } catch (error) {
       console.error("Error Edit expenses:", error);
@@ -204,15 +179,10 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
   deleteExpenses: async (payload: DeleteExpense) => {
     set({ loading: true });
     try {
-      const res = await axios(
-        configAxios("post", API_PATHS.LOGSDELETE, payload)
-      );
+      const res = await axios(configAxios("post", API_PATHS.LOGSDELETE, payload));
       if (res.status == 201) {
         toast.success("ลบข้อมูลเรียบร้อย!");
-        get().fetchExpenses(
-          get().selectDate.startDate,
-          get().selectDate.endDate
-        );
+        get().fetchExpenses(get().selectDate.startDate, get().selectDate.endDate);
       }
     } catch (error) {
       console.error("Error Delete expenses:", error);

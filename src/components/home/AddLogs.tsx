@@ -12,7 +12,7 @@ export default function AddLogs() {
           setIsOpen(true);
         }}
         type="button"
-        className="btn-flow-dark py-2 px-5 flex items-center gap-2 shadow-sm"
+        className="btn-flow-dark py-2.5 px-6 flex items-center justify-center gap-2 shadow-sm w-full sm:w-auto"
       >
         <TbPlus size={18} />
         Add Transaction

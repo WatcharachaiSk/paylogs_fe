@@ -25,8 +25,8 @@ export default function ModalInputDelete({
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={onClose} />
       
       {/* MODAL */}
-      <div className="relative w-full max-w-[360px] bg-white rounded-[14px] shadow-2xl border border-flow overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="p-6 text-center">
+      <div className="relative w-full max-w-[360px] max-h-[calc(100vh-2rem)] bg-white rounded-[14px] shadow-2xl border border-flow flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div className="p-6 text-center overflow-y-auto scrollbar-thin scrollbar-thumb-flow-ink3 scrollbar-track-transparent">
           <div className="flex justify-end absolute top-4 right-4">
             <button onClick={onClose} className="text-flow-ink3 hover:text-flow-ink transition-colors">
               <TbX size={20} />

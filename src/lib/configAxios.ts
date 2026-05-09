@@ -4,7 +4,8 @@ import { AxiosRequestConfig } from "axios";
 const configAxios = (
   method: "get" | "post" | "put" | "delete",
   url: string,
-  data?: object
+  data?: any,
+  headers?: any
 ): AxiosRequestConfig => {
   const token = getCookie("token");
 
@@ -13,6 +14,7 @@ const configAxios = (
     url,
     headers: {
       Authorization: token ? `Bearer ${token}` : "Bearer ",
+      ...headers,
     },
     timeout: 15000,
     data,

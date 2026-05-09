@@ -1,12 +1,39 @@
 @import "tailwindcss";
 
-/* 
-  Keeping it minimal to ensure Tailwind utilities work.
-  We will use arbitrary values in components instead of custom theme variables 
-  to ensure maximum compatibility as requested.
-*/
+@theme {
+  --color-flow-bg: #f7f5f0;
+  --color-flow-surface: #ffffff;
+  --color-flow-surface2: #f7f5f0;
+  --color-flow-ink: #1a1a1a;
+  --color-flow-ink2: #6b6b6b;
+  --color-flow-ink3: #a8a49c;
+  --color-flow-border: #e8e4dc;
+  
+  --color-green: #2d6a4f;
+  --color-green-light: #d8f3dc;
+  --color-red: #c1121f;
+  --color-red-light: #ffe8e8;
+  
+  --font-display: "DM Serif Display", serif;
+  --font-sans: "DM Sans", sans-serif;
+}
+
+@layer components {
+  .btn-flow {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg border border-flow-border bg-white text-[13px] font-medium text-flow-ink2 hover:bg-flow-surface2 transition-all;
+  }
+  
+  .btn-flow-dark {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg bg-flow-ink text-[13px] font-medium text-white hover:bg-black transition-all shadow-sm;
+  }
+  
+  .border-flow {
+    @apply border border-flow-border;
+  }
+}
 
 body {
-  background-color: #f7f5f0;
-  color: #1a1a1a;
+  background-color: var(--color-flow-bg);
+  color: var(--color-flow-ink);
+  font-family: var(--font-sans);
 }

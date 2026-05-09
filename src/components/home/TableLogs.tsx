@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useCategoryStore, useExpenseStore } from "@/store/slices";
 import { Expense } from "@/store/slices/expenses/types";
 import { formatDateTimeToTH, formatToYMD } from "@/utils/date";
-import DatePicker from "react-datepicker";
 import { TbSearch, TbCalendar, TbChevronDown, TbChevronLeft, TbChevronRight } from "react-icons/tb";
 
 import InputLoading from "../loading/TableLoading";
@@ -14,7 +13,7 @@ import DeleteButton from "./DeleteButton";
 import { GetIconComponent } from "../setIcon/GetIconComponent";
 import { formatNumber } from "@/utils/number";
 import { SELECT_DATE } from "@/lib/constants";
-import toast from "react-hot-toast";
+import CustomRangePicker from "../dashboard/CustomRangePicker";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -25,8 +24,6 @@ const TableComponent = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
   const [selectedOption, setSelectedOption] = useState(SELECT_DATE[0]);
   const [sumAmount, setSumAmount] = useState<number | null>(null);
 
@@ -80,8 +77,6 @@ const TableComponent = () => {
     const formattedEnd = formatToYMD(end);
 
     setSelectDate({ startDate: formattedStart, endDate: formattedEnd });
-    setStartDate(start);
-    setEndDate(end);
   };
 
   const filteredData = _.filter(expenses?.data, (item: Expense) => {
@@ -158,46 +153,12 @@ const TableComponent = () => {
 
       {/* CUSTOM RANGE PICKER */}
       {selectedOption === "Custom range" && (
-        <div className="p-4 bg-[#f7f5f0] border-b border-[#e8e4dc] flex flex-wrap items-end gap-3">
-          <div className="space-y-1">
-            <label className="text-[11px] text-[#a8a49c] uppercase tracking-wider font-medium">จากวันที่</label>
-            <DatePicker 
-              selected={startDate} 
-              onChange={(date: Date | null) => setStartDate(date)} 
-              selectsStart 
-              startDate={startDate} 
-              endDate={endDate} 
-              className="w-full px-3 py-2 rounded-lg border border-[#e8e4dc] bg-[#f7f5f0] text-[13px] outline-none"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-[11px] text-[#a8a49c] uppercase tracking-wider font-medium">ถึงวันที่</label>
-            <DatePicker 
-              selected={endDate} 
-              onChange={(date: Date | null) => setEndDate(date)} 
-              selectsEnd 
-              startDate={startDate} 
-              endDate={endDate} 
-              minDate={startDate || undefined}
-              className="w-full px-3 py-2 rounded-lg border border-[#e8e4dc] bg-[#f7f5f0] text-[13px] outline-none"
-            />
-          </div>
-          <button
-            className="inline-flex items-center gap-2 px-6 h-9 rounded-lg text-[13px] font-sans cursor-pointer border border-[#1a1a1a] bg-[#1a1a1a] text-white hover:bg-black transition-all duration-200 shadow-sm"
-            onClick={() => {
-              if (!startDate || !endDate) {
-                toast.error("กรุณาเลือกวันที่เริ่มต้นและสิ้นสุด");
-                return;
-              }
-              const formattedStart = formatToYMD(startDate);
-              const formattedEnd = formatToYMD(endDate);
-              setDropdownOpen(false);
-              setSelectDate({ startDate: formattedStart, endDate: formattedEnd });
-            }}
-          >
-            Apply
-          </button>
-        </div>
+        <CustomRangePicker 
+          onApply={(startDate, endDate) => {
+            setSelectDate({ startDate, endDate });
+            setDropdownOpen(false);
+          }}
+        />
       )}
 
       {/* TABLE */}
@@ -274,16 +235,49 @@ const TableComponent = () => {
             </button>
             
             <div className="flex items-center gap-1 px-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(num => (
-                <button
-                  key={num}
-                  onClick={() => setCurrentPage(num)}
-                  className={`min-w-[28px] h-7 rounded-lg text-[12px] transition-all
-                    ${currentPage === num ? "bg-[#1a1a1a] text-white" : "text-[#6b6b6b] hover:bg-[#f0ede6]"}`}
-                >
-                  {num}
-                </button>
-              ))}
+              {(() => {
+                const pages: (number | string)[] = [];
+                const maxVisible = 5;
+                
+                if (totalPages <= maxVisible) {
+                  for (let i = 1; i <= totalPages; i++) pages.push(i);
+                } else {
+                  pages.push(1);
+                  
+                  if (currentPage > 3) {
+                    pages.push("...");
+                  }
+                  
+                  let start = Math.max(2, currentPage - 1);
+                  let end = Math.min(totalPages - 1, currentPage + 1);
+                  
+                  if (currentPage <= 3) end = 4;
+                  if (currentPage >= totalPages - 2) start = totalPages - 3;
+                  
+                  for (let i = start; i <= end; i++) {
+                    pages.push(i);
+                  }
+                  
+                  if (currentPage < totalPages - 2) {
+                    pages.push("...");
+                  }
+                  
+                  pages.push(totalPages);
+                }
+
+                return pages.map((page, index) => (
+                  <button
+                    key={index}
+                    onClick={() => typeof page === "number" && setCurrentPage(page)}
+                    disabled={page === "..."}
+                    className={`min-w-[28px] h-7 rounded-lg text-[12px] transition-all
+                      ${currentPage === page ? "bg-[#1a1a1a] text-white" : "text-[#6b6b6b] hover:bg-[#f0ede6]"}
+                      ${page === "..." ? "cursor-default border-none hover:bg-transparent" : ""}`}
+                  >
+                    {page}
+                  </button>
+                ));
+              })()}
             </div>
 
             <button 

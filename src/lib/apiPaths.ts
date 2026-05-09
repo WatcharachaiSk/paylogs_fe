@@ -12,5 +12,7 @@ export const API_PATHS = {
   LOGSUSER: `${apiUrl}/logs/user`,
   LOGSDASHBOARD: `${apiUrl}/logs/dashboard`,
   LOGSIMPORT: `${apiUrl}/logs/import`,
+  LOGSANALYTICS: `${apiUrl}/logs/analytics`,
+  RECURRING: `${apiUrl}/recurring`,
   CATEGORIES: `${apiUrl}/category`,
 };
