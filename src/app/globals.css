@@ -1,11 +1,12 @@
 @import "tailwindcss";
-@tailwind utilities;
 
-/* custom global style */
+/* 
+  Keeping it minimal to ensure Tailwind utilities work.
+  We will use arbitrary values in components instead of custom theme variables 
+  to ensure maximum compatibility as requested.
+*/
+
 body {
-  @apply bg-gray-50 text-gray-800;
-}
-
-a {
-  @apply text-blue-600 hover:text-blue-800;
+  background-color: #f7f5f0;
+  color: #1a1a1a;
 }

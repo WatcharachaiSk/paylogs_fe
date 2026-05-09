@@ -1,22 +1,22 @@
 "use client";
 import { useState } from "react";
 import ModalInput from "./ModalInput";
+import { TbPlus } from "react-icons/tb";
 
 export default function AddLogs() {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex justify-end">
-      {/*  */}
+    <div className="flex justify-end mb-6">
       <button
         onClick={() => {
           setIsOpen(true);
         }}
         type="button"
-        className="text-white bg-blue-600 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-7.5 py-1.5 text-center inline-flex items-center me-2"
+        className="btn-flow-dark py-2 px-5 flex items-center gap-2 shadow-sm"
       >
-        Add Logs
+        <TbPlus size={18} />
+        Add Transaction
       </button>
-      {/*  */}
       {isOpen && (
         <ModalInput isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}

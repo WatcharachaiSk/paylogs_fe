@@ -33,6 +33,8 @@ interface ExpenseState {
     end?: string | null
   ) => Promise<void>;
   createExpenses: (payload: CreateExpense) => void;
+  createBulkExpenses: (payload: CreateExpense[]) => Promise<boolean>;
+  importExpenses: (file: File) => Promise<boolean>;
   editExpenses: (payload: EditExpense) => void;
   deleteExpenses: (payload: DeleteExpense) => void;
 }
@@ -63,17 +65,15 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       console.error("Error fetching expenses:", error);
       if (error?.status == 404) {
         toast("ไม่พบ logs ของวันที่ค้นหา", {
-          duration: 10000,
+          duration: 5000,
         });
       } else if (error?.status == 401) {
-        toast(" กรุณาทำการ login ใหม่", {
-          duration: 10000,
-        });
+        toast.error("กรุณาทำการ login ใหม่");
         deleteCookie("token");
         localStorage.clear();
         location.reload();
       } else {
-        alert("Error fetching expenses: " + JSON.stringify(error));
+        toast.error("เกิดข้อผิดพลาดในการดึงข้อมูล");
       }
     } finally {
       set({ loading: false });
@@ -94,18 +94,16 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       set({ dataDashboard: null });
       console.error("Error fetching Data Dashboard:", error);
       if (error?.status == 404) {
-        toast("ไม่พบ Data Dashboard ของวันที่ค้นหา", {
-          duration: 10000,
+        toast("ไม่พบข้อมูลแดชบอร์ด", {
+          duration: 5000,
         });
       } else if (error?.status == 401) {
-        toast(" กรุณาทำการ login ใหม่", {
-          duration: 10000,
-        });
+        toast.error("กรุณาทำการ login ใหม่");
         deleteCookie("token");
         localStorage.clear();
         location.reload();
       } else {
-        alert("Error Data Dashboard: " + JSON.stringify(error));
+        toast.error("เกิดข้อผิดพลาดในระบบแดชบอร์ด");
       }
     } finally {
       set({ loading: false });
@@ -117,7 +115,7 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       payload.amount = _.toNumber(payload.amount);
       const res = await axios(configAxios("post", API_PATHS.LOGS, payload));
       if (res.status == 201) {
-        toast.success("Save Create Log Successfully!");
+        toast.success("บันทึกข้อมูลเรียบร้อย!");
         get().fetchExpenses(
           get().selectDate.startDate,
           get().selectDate.endDate
@@ -125,8 +123,61 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       }
     } catch (error: unknown) {
       console.error("Error Create expenses:", error);
-      toast.error("Failed to Create categories");
-      // alert("Error Create expenses: " + JSON.stringify(error));
+      toast.error("ไม่สามารถบันทึกข้อมูลได้");
+    } finally {
+      set({ loading: false });
+    }
+  },
+  createBulkExpenses: async (payload: CreateExpense[]) => {
+    set({ loading: true });
+    try {
+      // Convert amounts to numbers
+      const formattedPayload = _.map(payload, item => ({
+        ...item,
+        amount: _.toNumber(item.amount),
+      }));
+
+      const res = await axios(configAxios("post", `${API_PATHS.LOGS}/bulk`, formattedPayload));
+      if (res.status == 201) {
+        toast.success(`บันทึกสำเร็จ ${payload.length} รายการ!`);
+        get().fetchExpenses(
+          get().selectDate.startDate,
+          get().selectDate.endDate
+        );
+        return true;
+      }
+      return false;
+    } catch (error: any) {
+      console.error("Error Bulk Create expenses:", error);
+      toast.error("ไม่สามารถบันทึกข้อมูลแบบกลุ่มได้");
+      return false;
+    } finally {
+      set({ loading: false });
+    }
+  },
+  importExpenses: async (file: File) => {
+    set({ loading: true });
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await axios(configAxios("post", API_PATHS.LOGSIMPORT, formData, {
+        "Content-Type": "multipart/form-data",
+      }));
+
+      if (res.status == 201 || res.status == 200) {
+        toast.success("นำเข้าข้อมูลสำเร็จ!");
+        get().fetchExpenses(
+          get().selectDate.startDate,
+          get().selectDate.endDate
+        );
+        return true;
+      }
+      return false;
+    } catch (error: any) {
+      console.error("Error Import expenses:", error);
+      toast.error("ไม่สามารถนำเข้าข้อมูลได้");
+      return false;
     } finally {
       set({ loading: false });
     }
@@ -137,7 +188,7 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       payload.amount = _.toNumber(payload.amount);
       const res = await axios(configAxios("post", API_PATHS.LOGSEDIT, payload));
       if (res.status == 201) {
-        toast.success("Save Edit Log Successfully!");
+        toast.success("แก้ไขข้อมูลเรียบร้อย!");
         get().fetchExpenses(
           get().selectDate.startDate,
           get().selectDate.endDate
@@ -145,7 +196,7 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
       }
     } catch (error) {
       console.error("Error Edit expenses:", error);
-      alert("Error Create expenses: " + JSON.stringify(error));
+      toast.error("ไม่สามารถแก้ไขข้อมูลได้");
     } finally {
       set({ loading: false });
     }
@@ -157,15 +208,15 @@ export const useExpenseStore = create<ExpenseState>((set, get) => ({
         configAxios("post", API_PATHS.LOGSDELETE, payload)
       );
       if (res.status == 201) {
-        toast.success("Delete Log Successfully!");
+        toast.success("ลบข้อมูลเรียบร้อย!");
         get().fetchExpenses(
           get().selectDate.startDate,
           get().selectDate.endDate
         );
       }
     } catch (error) {
-      console.error("Error Edit expenses:", error);
-      alert("Error Create expenses: " + JSON.stringify(error));
+      console.error("Error Delete expenses:", error);
+      toast.error("ไม่สามารถลบข้อมูลได้");
     } finally {
       set({ loading: false });
     }

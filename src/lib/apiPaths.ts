@@ -11,5 +11,6 @@ export const API_PATHS = {
   LOGSDELETE: `${apiUrl}/logs/delete`,
   LOGSUSER: `${apiUrl}/logs/user`,
   LOGSDASHBOARD: `${apiUrl}/logs/dashboard`,
+  LOGSIMPORT: `${apiUrl}/logs/import`,
   CATEGORIES: `${apiUrl}/category`,
 };

@@ -5,10 +5,12 @@ import { setCookie, deleteCookie } from "cookies-next";
 import { API_PATHS } from "@/lib/apiPaths";
 import configAxios from "@/lib/configAxios";
 import { User } from "./types";
+import toast from "react-hot-toast";
 
 interface AuthState {
   token: string | null;
   user: User | null;
+  loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   loginGoogle: (token: string) => Promise<boolean>;
   logout: () => void;
@@ -19,7 +21,9 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       token: null,
       user: null,
+      loading: false,
       login: async (email, password) => {
+        set({ loading: true });
         try {
           const response = await axios(
             configAxios("post", API_PATHS.LOGIN, {
@@ -30,20 +34,25 @@ export const useAuthStore = create<AuthState>()(
           if (response.status == 201) {
             const data = response.data;
             setCookie("token", data?.token);
-            set({ user: data.name });
+            set({ user: { name: data.name, email: data.email || "" } });
+            toast.success("Login Successful!");
             return true;
-          } else {
+          }
+ else {
             deleteCookie("token");
             return false;
           }
         } catch (error) {
           console.error("Error Login:", error);
           deleteCookie("token");
-          alert(`รหัสผ่านผิด: `);
+          toast.error("รหัสผ่านผิดพลาด กรุณาลองใหม่");
           return false;
+        } finally {
+          set({ loading: false });
         }
       },
       loginGoogle: async (token: string) => {
+        set({ loading: true });
         try {
           const response = await axios(
             configAxios("post", API_PATHS.LOGINGOOGLE, { token })
@@ -51,25 +60,28 @@ export const useAuthStore = create<AuthState>()(
           if (response.status == 201) {
             const data = response.data;
             setCookie("token", data?.token);
-            set({ user: data.name });
+            set({ user: { name: data.name, email: data.email || "" } });
+            toast.success("Google Login Successful!");
             return true;
-          } else {
+          }
+ else {
             deleteCookie("token");
             return false;
           }
         } catch (error) {
           console.error("Error Login Google:", error);
           deleteCookie("token");
-          alert(
-            "ระบบไม่พร้อมใช้งาน Login Google Error : " + JSON.stringify(error)
-          );
+          toast.error("ระบบไม่พร้อมใช้งานในขณะนี้");
           return false;
+        } finally {
+          set({ loading: false });
         }
       },
       logout: () => {
-        set({ user: null });
+        set({ user: null, token: null, loading: false });
         deleteCookie("token");
         localStorage.clear();
+        toast.success("Logged out successfully");
       },
     }),
     {

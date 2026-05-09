@@ -22,9 +22,9 @@ function InputOut() {
   return (
     <button
       onClick={cfLogout}
-      className="hover:underline text-red-600"
+      className="hover:underline text-red-600 flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] transition-all"
     >
-      <IoLogOutOutline size={20} />
+      <IoLogOutOutline size={20} /> Log Out
     </button>
   );
 }

@@ -3,29 +3,27 @@ import { useState } from "react";
 import { Expense } from "@/store/slices/expenses/types";
 import ModalInputDelete from "./ModalInputDelete";
 import { useExpenseStore } from "@/store/slices";
-import { MdDelete } from "react-icons/md";
+import { TbTrash } from "react-icons/tb";
 
 export default function DeleteButton({ item }: { item: Expense }) {
   const { setExpenseEdit } = useExpenseStore();
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex justify-end">
-      {/*  */}
+    <>
       <button
         onClick={() => {
-          // console.log("item is", item);
           setExpenseEdit(item);
           setIsOpen(true);
         }}
         type="button"
-        className="hover:text-white border border-b-rose-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-1 py-1 text-center me-2 mb-2"
+        className="w-7 h-7 flex items-center justify-center rounded-lg text-flow-ink2 hover:text-red hover:bg-red-light transition-all"
+        title="ลบรายการ"
       >
-        <MdDelete size={20} />
+        <TbTrash size={16} />
       </button>
-      {/*  */}
       {isOpen && (
         <ModalInputDelete isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
-    </div>
+    </>
   );
 }

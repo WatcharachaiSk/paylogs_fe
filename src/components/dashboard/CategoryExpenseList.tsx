@@ -3,7 +3,8 @@ import { formatDateTimeToTH } from "@/utils/date";
 import { formatNumber } from "@/utils/number";
 import _ from "lodash";
 import { useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { TbChevronDown } from "react-icons/tb";
+import { GetIconComponent } from "../setIcon/GetIconComponent";
 
 interface Props {
   data: CategoryData[] | [];
@@ -17,32 +18,45 @@ export default function CategoryExpenseList({ data }: Props) {
   };
 
   return (
-    <div className="w-full max-w-auto mx-auto mt-5">
+    <div className="w-full space-y-1">
       {_.map(data, category => (
-        <div key={category._id} className="border-b border-gray-200 py-2">
-          <div className="flex justify-between items-center cursor-pointer px-2 py-2 bg-gray-100 rounded" onClick={() => toggleOpen(category._id)}>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: category.categoryInfo.color }} />
-              <span className="font-semibold">{category.categoryInfo.name_th}</span>
+        <div key={category._id} className="overflow-hidden">
+          <div 
+            className="flex justify-between items-center cursor-pointer p-3 hover:bg-flow-bg rounded-xl transition-colors group" 
+            onClick={() => toggleOpen(category._id)}
+          >
+            <div className="flex items-center gap-3">
+              <div 
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-[14px]"
+                style={{ backgroundColor: category.categoryInfo.color + '20', color: category.categoryInfo.color }}
+              >
+                <GetIconComponent iconName={category.categoryInfo.icon} size={16} />
+              </div>
+              <div>
+                <div className="text-[13px] font-medium text-flow-ink">{category.categoryInfo.name}</div>
+                <div className="text-[10px] text-flow-ink3 uppercase tracking-wider">{category.count} รายการ</div>
+              </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-600">{category.totalAmount.toLocaleString()} บาท</span>
-              {openCategory === category._id ? <FaChevronUp /> : <FaChevronDown />}
+              <span className="text-[14px] font-semibold text-flow-ink">฿{formatNumber(category.totalAmount)}</span>
+              <div className={`text-flow-ink3 group-hover:text-flow-ink transition-transform duration-200 ${openCategory === category._id ? "rotate-180" : ""}`}>
+                <TbChevronDown size={16} />
+              </div>
             </div>
           </div>
 
           {openCategory === category._id && (
-            <ul className="pl-6 mt-2">
+            <div className="pl-14 pr-3 pb-3 space-y-2 animate-in slide-in-from-top-1 duration-200">
               {category.expenses.map(expense => (
-                <li key={expense._id} className="flex justify-between py-1 border-b border-gray-100">
+                <div key={expense._id} className="flex justify-between items-center py-2 border-b border-flow last:border-0">
                   <div>
-                    <div className="text-sm">{expense.description}</div>
-                    <div className="text-xs text-gray-500">{formatDateTimeToTH(expense?.date)}</div>
+                    <div className="text-[12px] text-flow-ink font-medium">{expense.description}</div>
+                    <div className="text-[10px] text-flow-ink3">{formatDateTimeToTH(expense?.date).split(' ')[0]} {formatDateTimeToTH(expense?.date).split(' ')[1]}</div>
                   </div>
-                  <div className="text-sm font-medium">{formatNumber(expense?.amount) ?? ""}฿</div>
-                </li>
+                  <div className="text-[12px] font-medium text-flow-ink2">฿{formatNumber(Math.abs(expense?.amount))}</div>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       ))}

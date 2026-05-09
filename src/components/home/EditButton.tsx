@@ -9,24 +9,21 @@ export default function EditButton({ item }: { item: Expense }) {
   const { setExpenseEdit } = useExpenseStore();
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex justify-end">
-      {/*  */}
+    <>
       <button
         onClick={() => {
-          // console.log("item is", item);
           setExpenseEdit(item);
           setIsOpen(true);
         }}
         type="button"
-        className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1 text-center me-2 mb-2"
+        className="w-7 h-7 flex items-center justify-center rounded-lg text-flow-ink2 hover:text-flow-ink hover:bg-flow-surface2 transition-all"
+        title="แก้ไขรายการ"
       >
-        {/* Edit */}
-        <TbEdit size={20} />
+        <TbEdit size={16} />
       </button>
-      {/*  */}
       {isOpen && (
         <ModalInputEdit isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
-    </div>
+    </>
   );
 }
