@@ -1,0 +1,419 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ff-display:'DM Serif Display',serif;
+  --ff-body:'DM Sans',sans-serif;
+  --ink:#1a1a1a;
+  --ink2:#6b6b6b;
+  --ink3:#a0a0a0;
+  --bg:#f7f5f0;
+  --surface:#ffffff;
+  --surface2:#f0ede6;
+  --border:#e8e4dc;
+  --green:#2d6a4f;
+  --green-light:#d8f3dc;
+  --green-mid:#52b788;
+  --red:#c1121f;
+  --red-light:#ffe8e8;
+  --amber:#b5540a;
+  --amber-light:#fff0df;
+  --blue:#1a4f8a;
+  --blue-light:#e8f0fb;
+  --r:14px;
+  --r-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+body{font-family:var(--ff-body);background:var(--bg);color:var(--ink);font-size:14px}
+
+.app-shell{display:grid;grid-template-columns:220px 1fr;min-height:600px;gap:0;background:var(--surface);border-radius:20px;border:1px solid var(--border);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.08)}
+
+.sidebar{background:var(--ink);color:#fff;padding:24px 0;display:flex;flex-direction:column;gap:4px}
+.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:8px}
+.logo-mark{font-family:var(--ff-display);font-size:20px;color:#fff;letter-spacing:-0.3px}
+.logo-sub{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px}
+
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:rgba(255,255,255,0.55);cursor:pointer;border-radius:0;transition:all 0.15s;letter-spacing:0.1px}
+.nav-item i{font-size:16px;width:18px}
+.nav-item.active{background:rgba(255,255,255,0.1);color:#fff}
+.nav-item:hover:not(.active){background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.8)}
+.nav-section{font-size:10px;color:rgba(255,255,255,0.25);padding:12px 20px 4px;text-transform:uppercase;letter-spacing:1.2px}
+
+.sidebar-footer{margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.1)}
+.avatar-row{display:flex;align-items:center;gap:10px}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#52b788,#2d6a4f);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#fff}
+.avatar-info p{font-size:13px;color:#fff;font-weight:500}
+.avatar-info span{font-size:11px;color:rgba(255,255,255,0.4)}
+
+.main{background:var(--bg);overflow:hidden}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left h1{font-family:var(--ff-display);font-size:22px;color:var(--ink);font-weight:400}
+.topbar-left p{font-size:12px;color:var(--ink3);margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r-sm);font-size:13px;font-family:var(--ff-body);cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink);font-weight:400}
+.btn-primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn i{font-size:14px}
+
+.content{padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.summary-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);padding:16px 18px;position:relative;overflow:hidden}
+.summary-card .card-label{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+.summary-card .card-amount{font-family:var(--ff-display);font-size:24px;color:var(--ink);font-weight:400;letter-spacing:-0.5px}
+.summary-card .card-change{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:3px}
+.card-change.up{color:var(--green)}
+.card-change.down{color:var(--red)}
+.summary-card .card-icon{position:absolute;right:14px;top:14px;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.icon-income{background:var(--green-light);color:var(--green)}
+.icon-expense{background:var(--red-light);color:var(--red)}
+.icon-balance{background:var(--blue-light);color:var(--blue)}
+.icon-saving{background:var(--amber-light);color:var(--amber)}
+
+.mid-row{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+
+.chart-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);padding:20px}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.chart-title{font-size:14px;font-weight:500;color:var(--ink)}
+.chart-tabs{display:flex;gap:2px;background:var(--surface2);border-radius:6px;padding:2px}
+.chart-tab{padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;color:var(--ink2)}
+.chart-tab.active{background:var(--surface);color:var(--ink);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:120px;padding:0 2px}
+.bar-group{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.bars{display:flex;gap:2px;align-items:flex-end;height:100px}
+.bar{width:10px;border-radius:3px 3px 0 0;min-height:4px}
+.bar-in{background:var(--green-mid)}
+.bar-out{background:#e8d5c4}
+.bar-label{font-size:9px;color:var(--ink3)}
+
+.pie-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+.pie-svg{width:100px;height:100px}
+.pie-legend{display:flex;flex-direction:column;gap:6px;width:100%}
+.legend-row{display:flex;align-items:center;gap:8px;font-size:12px}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.legend-label{color:var(--ink2);flex:1}
+.legend-pct{color:var(--ink);font-weight:500}
+
+.txn-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.txn-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.txn-title{font-size:14px;font-weight:500}
+.filter-row{display:flex;gap:6px;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg)}
+.filter-chip{padding:4px 12px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:var(--surface);color:var(--ink2);cursor:pointer}
+.filter-chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.search-input{flex:1;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-family:var(--ff-body);color:var(--ink);display:flex;align-items:center;gap:6px}
+
+.txn-table{width:100%}
+.txn-table th{font-size:11px;color:var(--ink3);font-weight:400;padding:8px 20px;text-align:left;background:var(--bg);border-bottom:1px solid var(--border);letter-spacing:0.5px;text-transform:uppercase}
+.txn-table td{padding:10px 20px;border-bottom:1px solid var(--border);font-size:13px;color:var(--ink)}
+.txn-table tr:last-child td{border-bottom:none}
+.txn-table tr:hover td{background:var(--bg)}
+.cat-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px}
+.amount-in{color:var(--green);font-weight:500}
+.amount-out{color:var(--red);font-weight:500}
+.row-actions{display:flex;gap:4px;opacity:0}
+tr:hover .row-actions{opacity:1}
+.action-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--ink2)}
+
+.add-modal-overlay{background:rgba(26,26,26,0.4);border-radius:20px;padding:40px;display:flex;align-items:center;justify-content:center;min-height:400px}
+.modal{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);padding:24px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.modal h2{font-family:var(--ff-display);font-size:20px;font-weight:400;margin-bottom:4px}
+.modal p{font-size:12px;color:var(--ink3);margin-bottom:20px}
+.type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface2);border-radius:10px;padding:4px;margin-bottom:16px}
+.type-btn{padding:8px;text-align:center;border-radius:8px;font-size:13px;cursor:pointer;font-family:var(--ff-body);border:none;background:transparent;color:var(--ink2)}
+.type-btn.income.active{background:#d8f3dc;color:var(--green);font-weight:500}
+.type-btn.expense.active{background:#ffe8e8;color:var(--red);font-weight:500}
+.form-group{margin-bottom:12px}
+.form-label{font-size:11px;color:var(--ink3);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:0.6px}
+.form-input{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:13px;font-family:var(--ff-body);color:var(--ink)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.modal-footer{display:flex;gap:8px;margin-top:16px}
+.modal-footer .btn{flex:1;justify-content:center;font-size:13px}
+</style>
+
+<h2 class="sr-only">FlowMoney — personal finance web app mockup showing dashboard with sidebar navigation, summary cards, charts, and transaction list</h2>
+
+<div id="screen" style="font-family:'DM Sans',sans-serif">
+
+<div class="app-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">FlowMoney</div>
+      <div class="logo-sub">Personal Finance</div>
+    </div>
+
+    <span class="nav-section">Main</span>
+    <div class="nav-item active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</div>
+    <div class="nav-item"><i class="ti ti-arrows-exchange" aria-hidden="true"></i> Transactions</div>
+    <div class="nav-item"><i class="ti ti-table-plus" aria-hidden="true"></i> Bulk Add</div>
+    <div class="nav-item"><i class="ti ti-file-import" aria-hidden="true"></i> Import</div>
+
+    <span class="nav-section">Insights</span>
+    <div class="nav-item"><i class="ti ti-chart-bar" aria-hidden="true"></i> Analytics</div>
+    <div class="nav-item"><i class="ti ti-repeat" aria-hidden="true"></i> Recurring</div>
+
+    <span class="nav-section">Other</span>
+    <div class="nav-item"><i class="ti ti-file-download" aria-hidden="true"></i> Export</div>
+    <div class="nav-item"><i class="ti ti-settings" aria-hidden="true"></i> Settings</div>
+
+    <div class="sidebar-footer">
+      <div class="avatar-row">
+        <div class="avatar">KP</div>
+        <div class="avatar-info">
+          <p>คุณ พชร</p>
+          <span>Free plan</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>Dashboard</h1>
+        <p>พฤษภาคม 2026</p>
+      </div>
+      <div class="topbar-right">
+        <button class="btn" onclick="showFilter()"><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i> Filter</button>
+        <button class="btn btn-primary" onclick="showAddModal()"><i class="ti ti-plus" aria-hidden="true"></i> Add Transaction</button>
+      </div>
+    </div>
+
+    <div id="dashboard-view" class="content">
+      <!-- SUMMARY CARDS -->
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="card-icon icon-income"><i class="ti ti-trending-up" aria-hidden="true"></i></div>
+          <div class="card-label">Total Income</div>
+          <div class="card-amount">฿50,000</div>
+          <div class="card-change up"><i class="ti ti-arrow-up" style="font-size:10px"></i> +12% from last month</div>
+        </div>
+        <div class="summary-card">
+          <div class="card-icon icon-expense"><i class="ti ti-trending-down" aria-hidden="true"></i></div>
+          <div class="card-label">Total Expense</div>
+          <div class="card-amount">฿32,450</div>
+          <div class="card-change down"><i class="ti ti-arrow-up" style="font-size:10px"></i> +5% from last month</div>
+        </div>
+        <div class="summary-card">
+          <div class="card-icon icon-balance"><i class="ti ti-wallet" aria-hidden="true"></i></div>
+          <div class="card-label">Balance</div>
+          <div class="card-amount">฿17,550</div>
+          <div class="card-change up"><i class="ti ti-arrow-up" style="font-size:10px"></i> on track</div>
+        </div>
+        <div class="summary-card">
+          <div class="card-icon icon-saving"><i class="ti ti-piggy-bank" aria-hidden="true"></i></div>
+          <div class="card-label">Saving Rate</div>
+          <div class="card-amount">35.1%</div>
+          <div class="card-change up"><i class="ti ti-arrow-up" style="font-size:10px"></i> great progress</div>
+        </div>
+      </div>
+
+      <!-- CHARTS ROW -->
+      <div class="mid-row">
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">รายรับ vs รายจ่าย</span>
+            <div class="chart-tabs">
+              <span class="chart-tab">3M</span>
+              <span class="chart-tab active">6M</span>
+              <span class="chart-tab">1Y</span>
+            </div>
+          </div>
+          <div class="bar-chart">
+            <div class="bar-group"><div class="bars"><div class="bar bar-in" style="height:60px"></div><div class="bar bar-out" style="height:45px"></div></div><span class="bar-label">ธ.ค.</span></div>
+            <div class="bar-group"><div class="bars"><div class="bar bar-in" style="height:72px"></div><div class="bar bar-out" style="height:55px"></div></div><span class="bar-label">ม.ค.</span></div>
+            <div class="bar-group"><div class="bars"><div class="bar bar-in" style="height:58px"></div><div class="bar bar-out" style="height:60px"></div></div><span class="bar-label">ก.พ.</span></div>
+            <div class="bar-group"><div class="bars"><div class="bar bar-in" style="height:80px"></div><div class="bar bar-out" style="height:50px"></div></div><span class="bar-label">มี.ค.</span></div>
+            <div class="bar-group"><div class="bars"><div class="bar bar-in" style="height:75px"></div><div class="bar bar-out" style="height:62px"></div></div><span class="bar-label">เม.ย.</span></div>
+            <div class="bar-group"><div class="bars"><div class="bar bar-in" style="height:100px"></div><div class="bar bar-out" style="height:78px"></div></div><span class="bar-label">พ.ค.</span></div>
+          </div>
+          <div style="display:flex;gap:14px;margin-top:10px">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink2)"><div style="width:8px;height:8px;border-radius:2px;background:var(--green-mid)"></div>Income</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink2)"><div style="width:8px;height:8px;border-radius:2px;background:#e8d5c4"></div>Expense</div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">หมวดหมู่รายจ่าย</span>
+          </div>
+          <div class="pie-wrap">
+            <svg class="pie-svg" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#f0ede6" stroke-width="20"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#52b788" stroke-width="20" stroke-dasharray="75 251" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#e8825a" stroke-width="20" stroke-dasharray="50 251" stroke-dashoffset="-75" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#4a90d9" stroke-width="20" stroke-dasharray="40 251" stroke-dashoffset="-125" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#f0c050" stroke-width="20" stroke-dasharray="35 251" stroke-dashoffset="-165" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#c8b8e0" stroke-width="20" stroke-dasharray="51 251" stroke-dashoffset="-200" transform="rotate(-90 50 50)"/>
+            </svg>
+            <div class="pie-legend">
+              <div class="legend-row"><div class="legend-dot" style="background:#52b788"></div><span class="legend-label">Food & Drinks</span><span class="legend-pct">30%</span></div>
+              <div class="legend-row"><div class="legend-dot" style="background:#e8825a"></div><span class="legend-label">Travel</span><span class="legend-pct">20%</span></div>
+              <div class="legend-row"><div class="legend-dot" style="background:#4a90d9"></div><span class="legend-label">Shopping</span><span class="legend-pct">16%</span></div>
+              <div class="legend-row"><div class="legend-dot" style="background:#f0c050"></div><span class="legend-label">Utilities</span><span class="legend-pct">14%</span></div>
+              <div class="legend-row"><div class="legend-dot" style="background:#c8b8e0"></div><span class="legend-label">Other</span><span class="legend-pct">20%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRANSACTION TABLE -->
+      <div class="txn-card">
+        <div class="txn-header">
+          <span class="txn-title">รายการล่าสุด</span>
+          <button class="btn" style="font-size:12px;padding:5px 10px">ดูทั้งหมด <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+        </div>
+        <div class="filter-row">
+          <span class="filter-chip active">ทั้งหมด</span>
+          <span class="filter-chip">รายรับ</span>
+          <span class="filter-chip">รายจ่าย</span>
+          <span class="filter-chip"><i class="ti ti-calendar" style="font-size:12px" aria-hidden="true"></i> เดือนนี้</span>
+          <div style="flex:1"></div>
+          <div style="display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 10px;font-size:12px;color:var(--ink3)"><i class="ti ti-search" style="font-size:13px" aria-hidden="true"></i> ค้นหารายการ...</div>
+        </div>
+        <table class="txn-table">
+          <thead>
+            <tr>
+              <th>วันที่</th>
+              <th>รายการ</th>
+              <th>หมวดหมู่</th>
+              <th>ประเภท</th>
+              <th style="text-align:right">จำนวน</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--ink3)">08 พ.ค. 2026</td>
+              <td style="font-weight:500">Starbucks</td>
+              <td><span class="cat-badge" style="background:#d8f3dc;color:#2d6a4f">🍃 Food</span></td>
+              <td><span style="font-size:11px;color:var(--red)">Expense</span></td>
+              <td style="text-align:right" class="amount-out">−฿185</td>
+              <td><div class="row-actions"><button class="action-btn"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="action-btn"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td>
+            </tr>
+            <tr>
+              <td style="color:var(--ink3)">07 พ.ค. 2026</td>
+              <td style="font-weight:500">เงินเดือน</td>
+              <td><span class="cat-badge" style="background:#e8f0fb;color:#1a4f8a">💼 Salary</span></td>
+              <td><span style="font-size:11px;color:var(--green)">Income</span></td>
+              <td style="text-align:right" class="amount-in">+฿50,000</td>
+              <td><div class="row-actions"><button class="action-btn"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="action-btn"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td>
+            </tr>
+            <tr>
+              <td style="color:var(--ink3)">06 พ.ค. 2026</td>
+              <td style="font-weight:500">Grab Food</td>
+              <td><span class="cat-badge" style="background:#fff0df;color:#b5540a">🚗 Travel</span></td>
+              <td><span style="font-size:11px;color:var(--red)">Expense</span></td>
+              <td style="text-align:right" class="amount-out">−฿320</td>
+              <td><div class="row-actions"><button class="action-btn"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="action-btn"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td>
+            </tr>
+            <tr>
+              <td style="color:var(--ink3)">05 พ.ค. 2026</td>
+              <td style="font-weight:500">Netflix</td>
+              <td><span class="cat-badge" style="background:#ffe8e8;color:#c1121f">📺 Entertainment</span></td>
+              <td><span style="font-size:11px;color:var(--red)">Expense</span></td>
+              <td style="text-align:right" class="amount-out">−฿419</td>
+              <td><div class="row-actions"><button class="action-btn"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="action-btn"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td>
+            </tr>
+            <tr>
+              <td style="color:var(--ink3)">04 พ.ค. 2026</td>
+              <td style="font-weight:500">Big C Superstore</td>
+              <td><span class="cat-badge" style="background:#d8f3dc;color:#2d6a4f">🛒 Shopping</span></td>
+              <td><span style="font-size:11px;color:var(--red)">Expense</span></td>
+              <td style="text-align:right" class="amount-out">−฿1,240</td>
+              <td><div class="row-actions"><button class="action-btn"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="action-btn"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADD MODAL VIEW -->
+    <div id="add-modal-view" style="display:none;padding:24px">
+      <div class="add-modal-overlay">
+        <div class="modal">
+          <h2>Add Transaction</h2>
+          <p>บันทึกรายรับหรือรายจ่ายใหม่</p>
+          <div class="type-toggle">
+            <button class="type-btn income active" onclick="setType('income',this)">💚 รายรับ</button>
+            <button class="type-btn expense" onclick="setType('expense',this)">❤️ รายจ่าย</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ชื่อรายการ</label>
+            <input class="form-input" type="text" placeholder="เช่น Starbucks, เงินเดือน...">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">จำนวนเงิน (฿)</label>
+              <input class="form-input" type="number" placeholder="0.00">
+            </div>
+            <div class="form-group">
+              <label class="form-label">หมวดหมู่</label>
+              <select class="form-input">
+                <option>Food & Drinks</option>
+                <option>Travel</option>
+                <option>Shopping</option>
+                <option>Salary</option>
+                <option>Utilities</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">วันที่ทำรายการ</label>
+            <input class="form-input" type="date" value="2026-05-08">
+          </div>
+          <div class="form-group">
+            <label class="form-label">หมายเหตุ (optional)</label>
+            <input class="form-input" type="text" placeholder="รายละเอียดเพิ่มเติม...">
+          </div>
+          <div class="modal-footer">
+            <button class="btn" onclick="closeMod()">ยกเลิก</button>
+            <button class="btn btn-primary">บันทึก <i class="ti ti-check" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<script>
+function showAddModal(){
+  document.getElementById('dashboard-view').style.display='none';
+  document.getElementById('add-modal-view').style.display='block';
+}
+function closeMod(){
+  document.getElementById('dashboard-view').style.display='';
+  document.getElementById('add-modal-view').style.display='none';
+}
+function showFilter(){
+  alert('Filter panel — Custom date range, category, and type filters will appear here');
+}
+function setType(t,el){
+  el.closest('.type-toggle').querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+document.querySelectorAll('.filter-chip').forEach(c=>{
+  c.addEventListener('click',function(){
+    this.closest('.filter-row').querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+document.querySelectorAll('.chart-tab').forEach(t=>{
+  t.addEventListener('click',function(){
+    this.closest('.chart-tabs').querySelectorAll('.chart-tab').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+document.querySelectorAll('.nav-item').forEach(n=>{
+  n.addEventListener('click',function(){
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>

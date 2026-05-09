@@ -1,0 +1,609 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=DM+Serif+Display&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ff:'DM Sans',sans-serif;
+  --ffd:'DM Serif Display',serif;
+  --ink:#1a1a1a;--ink2:#6b6b6b;--ink3:#a8a49c;
+  --bg:#f7f5f0;--surface:#ffffff;--surface2:#f0ede6;--border:#e8e4dc;
+  --green:#2d6a4f;--greenl:#d8f3dc;--greenm:#52b788;
+  --red:#c1121f;--redl:#ffe8e8;
+  --amber:#b5540a;--amberl:#fff0df;
+  --blue:#1a4f8a;--bluel:#e8f0fb;
+  --r:14px;--rsm:8px;
+}
+body{font-family:var(--ff);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+
+.app{display:grid;grid-template-columns:220px 1fr;min-height:700px;background:var(--surface);border-radius:20px;border:1px solid var(--border);overflow:hidden}
+
+.sidebar{background:#1a1a1a;color:#fff;padding:24px 0;display:flex;flex-direction:column}
+.s-logo{padding:0 20px 20px;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:8px}
+.s-logo-mark{font-family:var(--ffd);font-size:20px;color:#fff}
+.s-logo-sub{font-size:11px;color:rgba(255,255,255,0.35);margin-top:1px}
+.s-section{font-size:10px;color:rgba(255,255,255,0.25);padding:12px 20px 4px;letter-spacing:1.2px;text-transform:uppercase}
+.s-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:rgba(255,255,255,0.5);cursor:pointer}
+.s-item i{font-size:16px;width:18px}
+.s-item:hover{color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.05)}
+.s-item.active{color:#fff;background:rgba(255,255,255,0.1)}
+.s-foot{margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.1)}
+.s-avatar{display:flex;align-items:center;gap:10px}
+.av{width:32px;height:32px;border-radius:50%;background:#52b788;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#fff}
+.av-name{font-size:13px;color:#fff;font-weight:500}
+.av-plan{font-size:11px;color:rgba(255,255,255,0.35)}
+
+.main{background:var(--bg);display:flex;flex-direction:column;min-height:700px}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar h1{font-family:var(--ffd);font-size:22px;font-weight:400}
+.topbar p{font-size:12px;color:var(--ink3);margin-top:1px}
+.tb-right{display:flex;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--rsm);font-size:13px;font-family:var(--ff);cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--ink)}
+.btn-dark{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.btn i{font-size:14px}
+
+.content{padding:24px 28px;flex:1;display:flex;flex-direction:column;gap:20px}
+
+.page{display:none}
+.page.active{display:flex;flex-direction:column;gap:20px}
+
+.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.card-body{padding:20px}
+.card-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:14px;font-weight:500}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+
+.stat{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);padding:16px 18px;position:relative}
+.stat-label{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.stat-val{font-family:var(--ffd);font-size:26px;font-weight:400;letter-spacing:-0.5px}
+.stat-sub{font-size:11px;margin-top:5px}
+.stat-icon{position:absolute;right:14px;top:14px;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.ic-g{background:var(--greenl);color:var(--green)}
+.ic-r{background:var(--redl);color:var(--red)}
+.ic-b{background:var(--bluel);color:var(--blue)}
+.ic-a{background:var(--amberl);color:var(--amber)}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px}
+.badge-g{background:var(--greenl);color:var(--green)}
+.badge-r{background:var(--redl);color:var(--red)}
+.badge-b{background:var(--bluel);color:var(--blue)}
+.badge-a{background:var(--amberl);color:var(--amber)}
+
+.table{width:100%;border-collapse:collapse}
+.table th{font-size:11px;color:var(--ink3);font-weight:400;padding:8px 16px;text-align:left;background:var(--bg);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px}
+.table td{padding:11px 16px;border-bottom:1px solid var(--border);font-size:13px;color:var(--ink)}
+.table tr:last-child td{border-bottom:none}
+.table tr:hover td{background:var(--bg)}
+
+.inp{width:100%;padding:9px 12px;border-radius:var(--rsm);border:1px solid var(--border);background:var(--bg);font-size:13px;font-family:var(--ff);color:var(--ink)}
+.inp:focus{outline:none;border-color:#a8a49c}
+.lbl{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;display:block}
+
+.drop-zone{border:2px dashed var(--border);border-radius:var(--r);padding:40px;text-align:center;background:var(--bg);cursor:pointer}
+.drop-zone:hover{border-color:var(--ink3);background:var(--surface2)}
+.drop-icon{font-size:32px;color:var(--ink3);margin-bottom:12px}
+.drop-title{font-size:15px;font-weight:500;margin-bottom:6px}
+.drop-sub{font-size:13px;color:var(--ink3)}
+
+.step-row{display:flex;align-items:center;gap:0;margin-bottom:20px}
+.step{display:flex;align-items:center;gap:8px;flex:1}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-num.done{background:var(--greenm);color:#fff}
+.step-num.curr{background:var(--ink);color:#fff}
+.step-num.todo{background:var(--border);color:var(--ink3)}
+.step-label{font-size:12px;font-weight:500}
+.step-label.todo{color:var(--ink3)}
+.step-line{height:1px;background:var(--border);flex:1;margin:0 8px}
+.step-line.done{background:var(--greenm)}
+
+.preview-table-wrap{overflow-x:auto}
+.preview-row-valid td{background:#fff}
+.preview-row-warn td:first-child{border-left:3px solid #f0c050}
+.preview-row-err td:first-child{border-left:3px solid var(--red)}
+
+.bulk-table{width:100%;border-collapse:collapse}
+.bulk-table th{font-size:11px;color:var(--ink3);padding:8px 10px;text-align:left;background:var(--bg);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px;font-weight:400}
+.bulk-table td{padding:4px 6px;border-bottom:1px solid var(--border)}
+.bulk-table .b-inp{width:100%;padding:7px 9px;border-radius:6px;border:1px solid transparent;background:transparent;font-size:13px;font-family:var(--ff);color:var(--ink)}
+.bulk-table .b-inp:focus{border-color:var(--border);background:var(--surface);outline:none}
+.bulk-table tr:hover .b-inp{background:var(--bg)}
+.row-num{font-size:11px;color:var(--ink3);width:28px;text-align:center;padding:0 6px}
+
+.chart-bar-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.chart-bar-label{font-size:12px;color:var(--ink2);width:80px;flex-shrink:0;text-align:right}
+.chart-bar-track{flex:1;background:var(--border);border-radius:4px;height:10px;overflow:hidden}
+.chart-bar-fill{height:100%;border-radius:4px}
+.chart-bar-val{font-size:12px;color:var(--ink);width:60px;text-align:right;flex-shrink:0}
+
+.line-svg{width:100%;height:80px}
+
+.toggle-group{display:flex;background:var(--surface2);border-radius:8px;padding:3px;gap:2px}
+.tgl{padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;color:var(--ink2);border:none;background:transparent;font-family:var(--ff)}
+.tgl.active{background:var(--surface);color:var(--ink);font-weight:500}
+
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.settings-row:last-child{border-bottom:none}
+.settings-label{font-size:14px;font-weight:500}
+.settings-sub{font-size:12px;color:var(--ink3);margin-top:2px}
+.switch{width:40px;height:22px;background:var(--border);border-radius:11px;cursor:pointer;position:relative;flex-shrink:0}
+.switch.on{background:var(--greenm)}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s}
+.switch.on::after{left:21px}
+
+.cat-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:var(--surface);margin:3px}
+.cat-chip i{font-size:11px;color:var(--ink3);cursor:pointer}
+
+.export-opt{display:flex;align-items:center;gap:14px;padding:14px;border-radius:var(--r);border:1px solid var(--border);background:var(--surface);cursor:pointer}
+.export-opt:hover{background:var(--bg)}
+.export-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.export-title{font-size:13px;font-weight:500}
+.export-sub{font-size:11px;color:var(--ink3);margin-top:2px}
+
+.notif-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.notif-item:last-child{border-bottom:none}
+.notif-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.notif-title{font-size:13px;font-weight:500}
+.notif-time{font-size:11px;color:var(--ink3);margin-top:2px}
+</style>
+
+<h2 class="sr-only">FlowMoney app — all pages: Import, Bulk Add, Analytics, and Settings</h2>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="s-logo">
+      <div class="s-logo-mark">FlowMoney</div>
+      <div class="s-logo-sub">Personal Finance</div>
+    </div>
+    <span class="s-section">Main</span>
+    <div class="s-item" data-page="dash" onclick="nav(this)"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</div>
+    <div class="s-item" data-page="txn" onclick="nav(this)"><i class="ti ti-arrows-exchange" aria-hidden="true"></i> Transactions</div>
+    <div class="s-item active" data-page="bulk" onclick="nav(this)"><i class="ti ti-table-plus" aria-hidden="true"></i> Bulk Add</div>
+    <div class="s-item" data-page="import" onclick="nav(this)"><i class="ti ti-file-import" aria-hidden="true"></i> Import</div>
+    <span class="s-section">Insights</span>
+    <div class="s-item" data-page="analytics" onclick="nav(this)"><i class="ti ti-chart-bar" aria-hidden="true"></i> Analytics</div>
+    <div class="s-item" data-page="recurring" onclick="nav(this)"><i class="ti ti-repeat" aria-hidden="true"></i> Recurring</div>
+    <span class="s-section">Other</span>
+    <div class="s-item" data-page="export" onclick="nav(this)"><i class="ti ti-file-download" aria-hidden="true"></i> Export</div>
+    <div class="s-item" data-page="settings" onclick="nav(this)"><i class="ti ti-settings" aria-hidden="true"></i> Settings</div>
+    <div class="s-foot">
+      <div class="s-avatar">
+        <div class="av">KP</div>
+        <div><div class="av-name">คุณ พชร</div><div class="av-plan">Free plan</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar" id="topbar">
+      <div><h1 id="page-title">Bulk Add</h1><p id="page-sub">เพิ่มหลายรายการพร้อมกัน</p></div>
+      <div class="tb-right" id="tb-actions">
+        <button class="btn"><i class="ti ti-trash" aria-hidden="true"></i> ล้างทั้งหมด</button>
+        <button class="btn btn-dark"><i class="ti ti-device-floppy" aria-hidden="true"></i> บันทึกทั้งหมด</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- BULK ADD PAGE -->
+      <div class="page active" id="page-bulk">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">กรอกรายการ</span>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span style="font-size:12px;color:var(--ink3)" id="row-count">5 รายการ</span>
+              <button class="btn" style="font-size:12px;padding:5px 10px" onclick="addRow()"><i class="ti ti-plus" aria-hidden="true"></i> เพิ่มแถว</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="bulk-table" id="bulk-table">
+              <thead>
+                <tr>
+                  <th style="width:28px">#</th>
+                  <th style="width:110px">วันที่</th>
+                  <th>ชื่อรายการ</th>
+                  <th style="width:130px">หมวดหมู่</th>
+                  <th style="width:80px">ประเภท</th>
+                  <th style="width:110px">จำนวน (฿)</th>
+                  <th style="width:32px"></th>
+                </tr>
+              </thead>
+              <tbody id="bulk-body">
+                <tr><td class="row-num">1</td><td><input class="b-inp" type="date" value="2026-05-08"></td><td><input class="b-inp" type="text" placeholder="ชื่อรายการ..." value="Starbucks"></td><td><select class="b-inp"><option>Food</option><option>Travel</option><option>Shopping</option><option>Salary</option></select></td><td><select class="b-inp"><option>Expense</option><option>Income</option></select></td><td><input class="b-inp" type="number" placeholder="0" value="185"></td><td><button onclick="delRow(this)" style="border:none;background:none;cursor:pointer;color:var(--ink3);font-size:14px"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>
+                <tr><td class="row-num">2</td><td><input class="b-inp" type="date" value="2026-05-07"></td><td><input class="b-inp" type="text" placeholder="ชื่อรายการ..." value="Grab Food"></td><td><select class="b-inp"><option>Travel</option><option>Food</option><option>Shopping</option><option>Salary</option></select></td><td><select class="b-inp"><option>Expense</option><option>Income</option></select></td><td><input class="b-inp" type="number" placeholder="0" value="320"></td><td><button onclick="delRow(this)" style="border:none;background:none;cursor:pointer;color:var(--ink3);font-size:14px"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>
+                <tr><td class="row-num">3</td><td><input class="b-inp" type="date" value="2026-05-06"></td><td><input class="b-inp" type="text" placeholder="ชื่อรายการ..." value="Netflix"></td><td><select class="b-inp"><option>Shopping</option><option>Food</option><option>Travel</option><option>Salary</option></select></td><td><select class="b-inp"><option>Expense</option><option>Income</option></select></td><td><input class="b-inp" type="number" placeholder="0" value="419"></td><td><button onclick="delRow(this)" style="border:none;background:none;cursor:pointer;color:var(--ink3);font-size:14px"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>
+                <tr><td class="row-num">4</td><td><input class="b-inp" type="date" value="2026-05-05"></td><td><input class="b-inp" type="text" placeholder="ชื่อรายการ..." value=""></td><td><select class="b-inp"><option>Food</option><option>Travel</option><option>Shopping</option><option>Salary</option></select></td><td><select class="b-inp"><option>Expense</option><option>Income</option></select></td><td><input class="b-inp" type="number" placeholder="0" value=""></td><td><button onclick="delRow(this)" style="border:none;background:none;cursor:pointer;color:var(--ink3);font-size:14px"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>
+                <tr><td class="row-num">5</td><td><input class="b-inp" type="date" value="2026-05-04"></td><td><input class="b-inp" type="text" placeholder="ชื่อรายการ..." value=""></td><td><select class="b-inp"><option>Food</option><option>Travel</option><option>Shopping</option><option>Salary</option></select></td><td><select class="b-inp"><option>Income</option><option>Expense</option></select></td><td><input class="b-inp" type="number" placeholder="0" value=""></td><td><button onclick="delRow(this)" style="border:none;background:none;cursor:pointer;color:var(--ink3);font-size:14px"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:14px 16px;background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;gap:10px">
+            <i class="ti ti-info-circle" style="color:var(--ink3);font-size:15px" aria-hidden="true"></i>
+            <span style="font-size:12px;color:var(--ink3)">กด Tab เพื่อเลื่อนระหว่างช่อง · สามารถวางข้อมูลจาก Excel ได้โดยตรง</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMPORT PAGE -->
+      <div class="page" id="page-import">
+        <div class="step-row">
+          <div class="step"><div class="step-num curr">1</div><span class="step-label">อัปโหลดไฟล์</span></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-num todo">2</div><span class="step-label todo">ตรวจสอบข้อมูล</span></div>
+          <div class="step-line"></div>
+          <div class="step"><div class="step-num todo">3</div><span class="step-label todo">ยืนยัน Import</span></div>
+        </div>
+
+        <div class="grid2" style="align-items:start">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="drop-zone" id="dz" ondragover="event.preventDefault();this.style.borderColor='#1a1a1a'" ondragleave="this.style.borderColor=''" ondrop="handleDrop(event)">
+              <div class="drop-icon"><i class="ti ti-cloud-upload" aria-hidden="true"></i></div>
+              <div class="drop-title">ลากไฟล์มาวางที่นี่</div>
+              <div class="drop-sub" style="margin-bottom:14px">รองรับ .xlsx, .csv ขนาดไม่เกิน 10MB</div>
+              <button class="btn btn-dark" style="font-size:12px" onclick="mockUpload()"><i class="ti ti-file-upload" aria-hidden="true"></i> เลือกไฟล์</button>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="height:1px;background:var(--border);flex:1"></div>
+              <span style="font-size:12px;color:var(--ink3)">หรือ</span>
+              <div style="height:1px;background:var(--border);flex:1"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                  <i class="ti ti-brand-google" style="font-size:18px;color:#4285f4" aria-hidden="true"></i>
+                  <span style="font-size:14px;font-weight:500">Google Sheets URL</span>
+                </div>
+                <label class="lbl">วาง URL</label>
+                <input class="inp" type="text" placeholder="https://docs.google.com/spreadsheets/d/..." style="margin-bottom:10px">
+                <button class="btn btn-dark" style="width:100%;justify-content:center;font-size:13px"><i class="ti ti-download" aria-hidden="true"></i> ดึงข้อมูล</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="card" id="preview-card" style="display:none">
+              <div class="card-head">
+                <span class="card-title">ตัวอย่างข้อมูล</span>
+                <div style="display:flex;gap:6px">
+                  <span class="badge badge-g"><i class="ti ti-check" style="font-size:10px" aria-hidden="true"></i> 47 rows valid</span>
+                  <span class="badge badge-r"><i class="ti ti-alert-circle" style="font-size:10px" aria-hidden="true"></i> 2 errors</span>
+                  <span class="badge badge-a"><i class="ti ti-copy" style="font-size:10px" aria-hidden="true"></i> 1 duplicate</span>
+                </div>
+              </div>
+              <div class="preview-table-wrap">
+                <table class="table" style="table-layout:fixed;min-width:100%">
+                  <thead><tr><th style="width:90px">วันที่</th><th>รายการ</th><th style="width:80px">หมวดหมู่</th><th style="width:80px;text-align:right">จำนวน</th><th style="width:50px">สถานะ</th></tr></thead>
+                  <tbody>
+                    <tr class="preview-row-valid"><td style="font-size:12px">2026-05-01</td><td style="font-size:12px">Starbucks</td><td><span class="badge badge-g" style="font-size:10px">Food</span></td><td style="text-align:right;font-size:12px;color:var(--red)">−185</td><td><i class="ti ti-circle-check" style="color:var(--greenm)" aria-hidden="true"></i></td></tr>
+                    <tr class="preview-row-warn"><td style="font-size:12px">2026-05-02</td><td style="font-size:12px">Grab</td><td><span class="badge badge-a" style="font-size:10px">Travel</span></td><td style="text-align:right;font-size:12px;color:var(--red)">−320</td><td><i class="ti ti-alert-triangle" style="color:var(--amber)" aria-hidden="true"></i></td></tr>
+                    <tr class="preview-row-err"><td style="font-size:12px">—</td><td style="font-size:12px;color:var(--red)">ไม่มีวันที่</td><td>—</td><td style="text-align:right;font-size:12px">750</td><td><i class="ti ti-circle-x" style="color:var(--red)" aria-hidden="true"></i></td></tr>
+                    <tr class="preview-row-valid"><td style="font-size:12px">2026-05-04</td><td style="font-size:12px">Big C</td><td><span class="badge badge-b" style="font-size:10px">Shopping</span></td><td style="text-align:right;font-size:12px;color:var(--red)">−1,240</td><td><i class="ti ti-circle-check" style="color:var(--greenm)" aria-hidden="true"></i></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div style="padding:12px 16px;background:var(--bg);border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px">
+                <button class="btn" style="font-size:12px">ยกเลิก</button>
+                <button class="btn btn-dark" style="font-size:12px"><i class="ti ti-check" aria-hidden="true"></i> ยืนยัน Import 47 รายการ</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body">
+                <div style="font-size:13px;font-weight:500;margin-bottom:10px">รูปแบบไฟล์ที่รองรับ</div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2)"><i class="ti ti-file-spreadsheet" style="color:var(--green)" aria-hidden="true"></i> Excel (.xlsx) — แนะนำ</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2)"><i class="ti ti-file-text" style="color:var(--blue)" aria-hidden="true"></i> CSV (.csv)</div>
+                  <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2)"><i class="ti ti-brand-google" style="color:#4285f4" aria-hidden="true"></i> Google Sheets URL</div>
+                </div>
+                <div style="margin-top:10px;padding:8px 10px;background:var(--bluel);border-radius:8px;font-size:11px;color:var(--blue)">
+                  คอลัมน์ที่ต้องมี: date, title, amount · คอลัมน์ category, type จะถูกตรวจจับอัตโนมัติ
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS PAGE -->
+      <div class="page" id="page-analytics">
+        <div class="grid4">
+          <div class="stat"><div class="stat-icon ic-g"><i class="ti ti-trending-up" aria-hidden="true"></i></div><div class="stat-label">รายรับรวม</div><div class="stat-val">฿50,000</div><div class="stat-sub" style="color:var(--green)">+12% จากเดือนก่อน</div></div>
+          <div class="stat"><div class="stat-icon ic-r"><i class="ti ti-trending-down" aria-hidden="true"></i></div><div class="stat-label">รายจ่ายรวม</div><div class="stat-val">฿32,450</div><div class="stat-sub" style="color:var(--red)">+5% จากเดือนก่อน</div></div>
+          <div class="stat"><div class="stat-icon ic-b"><i class="ti ti-wallet" aria-hidden="true"></i></div><div class="stat-label">ยอดคงเหลือ</div><div class="stat-val">฿17,550</div><div class="stat-sub" style="color:var(--ink3)">เดือนนี้</div></div>
+          <div class="stat"><div class="stat-icon ic-a"><i class="ti ti-piggy-bank" aria-hidden="true"></i></div><div class="stat-label">Saving Rate</div><div class="stat-val">35.1%</div><div class="stat-sub" style="color:var(--green)">เป้าหมาย 30%</div></div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">รายจ่ายตามหมวดหมู่</span>
+              <div class="toggle-group">
+                <button class="tgl active">เดือนนี้</button>
+                <button class="tgl">3 เดือน</button>
+                <button class="tgl">1 ปี</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-bar-h"><span class="chart-bar-label">Food</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:75%;background:var(--greenm)"></div></div><span class="chart-bar-val">฿9,720</span></div>
+              <div class="chart-bar-h"><span class="chart-bar-label">Travel</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:52%;background:#4a90d9"></div></div><span class="chart-bar-val">฿6,480</span></div>
+              <div class="chart-bar-h"><span class="chart-bar-label">Shopping</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:42%;background:#e8825a"></div></div><span class="chart-bar-val">฿5,200</span></div>
+              <div class="chart-bar-h"><span class="chart-bar-label">Utilities</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:35%;background:#f0c050"></div></div><span class="chart-bar-val">฿4,380</span></div>
+              <div class="chart-bar-h"><span class="chart-bar-label">Health</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:22%;background:#c8b8e0"></div></div><span class="chart-bar-val">฿2,800</span></div>
+              <div class="chart-bar-h"><span class="chart-bar-label">Other</span><div class="chart-bar-track"><div class="chart-bar-fill" style="width:32%;background:var(--border)"></div></div><span class="chart-bar-val">฿3,870</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="card-title">แนวโน้มรายเดือน</span></div>
+            <div class="card-body">
+              <svg class="line-svg" viewBox="0 0 300 80" preserveAspectRatio="none">
+                <polyline points="0,60 50,45 100,55 150,30 200,40 250,20 300,28" fill="none" stroke="#52b788" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+                <polyline points="0,70 50,65 100,72 150,58 200,62 250,50 300,55" fill="none" stroke="#e8825a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+              </svg>
+              <div style="display:flex;gap:14px;margin-top:6px">
+                <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink2)"><div style="width:12px;height:2px;background:#52b788;border-radius:2px"></div>รายรับ</div>
+                <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink2)"><div style="width:12px;height:2px;background:#e8825a;border-radius:2px"></div>รายจ่าย</div>
+              </div>
+              <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--greenl);border-radius:8px">
+                  <span style="font-size:12px;color:var(--green);font-weight:500">เดือนที่ใช้จ่ายน้อยสุด</span>
+                  <span style="font-size:12px;color:var(--green)">กุมภาพันธ์ · ฿24,100</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--redl);border-radius:8px">
+                  <span style="font-size:12px;color:var(--red);font-weight:500">เดือนที่ใช้จ่ายมากสุด</span>
+                  <span style="font-size:12px;color:var(--red)">มกราคม · ฿38,500</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><span class="card-title">Top 5 รายการที่ใช้จ่ายบ่อย</span></div>
+          <table class="table">
+            <thead><tr><th>รายการ</th><th>หมวดหมู่</th><th>ครั้ง</th><th style="text-align:right">รวม</th><th style="text-align:right">เฉลี่ย/ครั้ง</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:500">Starbucks</td><td><span class="badge badge-g">Food</span></td><td>12</td><td style="text-align:right;color:var(--red)">฿2,220</td><td style="text-align:right;color:var(--ink3)">฿185</td></tr>
+              <tr><td style="font-weight:500">Grab</td><td><span class="badge badge-a">Travel</span></td><td>8</td><td style="text-align:right;color:var(--red)">฿2,560</td><td style="text-align:right;color:var(--ink3)">฿320</td></tr>
+              <tr><td style="font-weight:500">Netflix</td><td><span class="badge badge-r">Entertain</span></td><td>5</td><td style="text-align:right;color:var(--red)">฿2,095</td><td style="text-align:right;color:var(--ink3)">฿419</td></tr>
+              <tr><td style="font-weight:500">Big C</td><td><span class="badge badge-b">Shopping</span></td><td>6</td><td style="text-align:right;color:var(--red)">฿7,440</td><td style="text-align:right;color:var(--ink3)">฿1,240</td></tr>
+              <tr><td style="font-weight:500">ค่าไฟ</td><td><span class="badge badge-a">Utilities</span></td><td>3</td><td style="text-align:right;color:var(--red)">฿3,600</td><td style="text-align:right;color:var(--ink3)">฿1,200</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RECURRING PAGE -->
+      <div class="page" id="page-recurring">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">รายการประจำ</span>
+            <button class="btn btn-dark" style="font-size:12px"><i class="ti ti-plus" aria-hidden="true"></i> เพิ่มรายการประจำ</button>
+          </div>
+          <table class="table">
+            <thead><tr><th>รายการ</th><th>หมวดหมู่</th><th>ความถี่</th><th>วันถัดไป</th><th style="text-align:right">จำนวน</th><th>สถานะ</th><th></th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:500">เงินเดือน</td><td><span class="badge badge-b">Salary</span></td><td style="color:var(--ink3)">ทุกเดือน</td><td style="color:var(--ink3)">1 มิ.ย. 2026</td><td style="text-align:right;color:var(--green);font-weight:500">+฿50,000</td><td><span class="badge badge-g"><i class="ti ti-circle-check" style="font-size:10px" aria-hidden="true"></i> Active</span></td><td><button style="border:none;background:none;cursor:pointer;color:var(--ink3);font-size:14px"><i class="ti ti-edit" aria-hidden="true"></i></button></td></tr>
+              <tr><td style="font-weight:500">Netflix</td><td><span class="badge badge-r">Entertain</span></td><td style="color:var(--ink3)">ทุกเดือน</td><td style="color:var(--ink3)">15 พ.ค. 2026</td><td style="text-align:right;color:var(--red);font-weight:500">−฿419</td><td><span class="badge badge-g"><i class="ti ti-circle-check" style="font-size:10px" aria-hidden="true"></i> Active</span></td><td><button style="border:none;background:none;cursor:pointer;color:var(--ink3);font-size:14px"><i class="ti ti-edit" aria-hidden="true"></i></button></td></tr>
+              <tr><td style="font-weight:500">ค่าเช่า</td><td><span class="badge badge-a">Housing</span></td><td style="color:var(--ink3)">ทุกเดือน</td><td style="color:var(--ink3)">1 มิ.ย. 2026</td><td style="text-align:right;color:var(--red);font-weight:500">−฿8,000</td><td><span class="badge badge-g"><i class="ti ti-circle-check" style="font-size:10px" aria-hidden="true"></i> Active</span></td><td><button style="border:none;background:none;cursor:pointer;color:var(--ink3);font-size:14px"><i class="ti ti-edit" aria-hidden="true"></i></button></td></tr>
+              <tr><td style="font-weight:500">ประกันชีวิต</td><td><span class="badge badge-b">Insurance</span></td><td style="color:var(--ink3)">ทุกปี</td><td style="color:var(--ink3)">1 ม.ค. 2027</td><td style="text-align:right;color:var(--red);font-weight:500">−฿12,000</td><td><span class="badge" style="background:var(--border);color:var(--ink3)">Paused</span></td><td><button style="border:none;background:none;cursor:pointer;color:var(--ink3);font-size:14px"><i class="ti ti-edit" aria-hidden="true"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- EXPORT PAGE -->
+      <div class="page" id="page-export">
+        <div class="grid2" style="align-items:start">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="card">
+              <div class="card-body">
+                <div style="font-size:14px;font-weight:500;margin-bottom:14px">เลือกช่วงเวลา</div>
+                <div class="toggle-group" style="margin-bottom:12px">
+                  <button class="tgl active">เดือนนี้</button>
+                  <button class="tgl">3 เดือน</button>
+                  <button class="tgl">ปีนี้</button>
+                  <button class="tgl">กำหนดเอง</button>
+                </div>
+                <div class="grid2" style="gap:8px">
+                  <div><label class="lbl">จากวันที่</label><input class="inp" type="date" value="2026-05-01"></div>
+                  <div><label class="lbl">ถึงวันที่</label><input class="inp" type="date" value="2026-05-31"></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div style="font-size:14px;font-weight:500;margin-bottom:12px">เลือกรูปแบบไฟล์</div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div class="export-opt"><div class="export-icon" style="background:var(--greenl);color:var(--green)"><i class="ti ti-file-spreadsheet" aria-hidden="true"></i></div><div><div class="export-title">Excel (.xlsx)</div><div class="export-sub">พร้อม formatting และ chart</div></div><i class="ti ti-download" style="margin-left:auto;color:var(--ink3)" aria-hidden="true"></i></div>
+                  <div class="export-opt"><div class="export-icon" style="background:var(--bluel);color:var(--blue)"><i class="ti ti-file-text" aria-hidden="true"></i></div><div><div class="export-title">CSV (.csv)</div><div class="export-sub">สำหรับนำเข้า app อื่น</div></div><i class="ti ti-download" style="margin-left:auto;color:var(--ink3)" aria-hidden="true"></i></div>
+                  <div class="export-opt"><div class="export-icon" style="background:var(--redl);color:var(--red)"><i class="ti ti-file-type-pdf" aria-hidden="true"></i></div><div><div class="export-title">PDF Report</div><div class="export-sub">สรุปพร้อมกราฟ พิมพ์ได้เลย</div></div><i class="ti ti-download" style="margin-left:auto;color:var(--ink3)" aria-hidden="true"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="card-title">ตัวอย่าง Report</span></div>
+            <div class="card-body" style="background:var(--bg);border-radius:0 0 var(--r) var(--r)">
+              <div style="background:var(--surface);border-radius:8px;padding:16px;border:1px solid var(--border)">
+                <div style="font-family:var(--ffd);font-size:18px;margin-bottom:2px">Financial Report</div>
+                <div style="font-size:11px;color:var(--ink3);margin-bottom:14px">พฤษภาคม 2026 · FlowMoney</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+                  <div style="background:var(--greenl);border-radius:6px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--green)">รายรับ</div><div style="font-size:16px;font-weight:500;color:var(--green)">฿50,000</div></div>
+                  <div style="background:var(--redl);border-radius:6px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--red)">รายจ่าย</div><div style="font-size:16px;font-weight:500;color:var(--red)">฿32,450</div></div>
+                  <div style="background:var(--bluel);border-radius:6px;padding:10px;text-align:center"><div style="font-size:10px;color:var(--blue)">คงเหลือ</div><div style="font-size:16px;font-weight:500;color:var(--blue)">฿17,550</div></div>
+                </div>
+                <div style="font-size:11px;color:var(--ink3);text-align:center">[ กราฟ + รายการทั้งหมด 23 รายการ ]</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS PAGE -->
+      <div class="page" id="page-settings">
+        <div class="grid2" style="align-items:start">
+          <div style="display:flex;flex-direction:column;gap:16px">
+
+            <div class="card">
+              <div class="card-head"><span class="card-title">บัญชีผู้ใช้</span></div>
+              <div class="card-body">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#52b788;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:500;color:#fff">KP</div>
+                  <div><div style="font-weight:500">คุณ พชร</div><div style="font-size:12px;color:var(--ink3)">kpuser@email.com</div></div>
+                  <button class="btn" style="margin-left:auto;font-size:12px">แก้ไข</button>
+                </div>
+                <div style="padding:10px 12px;background:var(--amberl);border-radius:8px;display:flex;align-items:center;gap:8px">
+                  <i class="ti ti-crown" style="color:var(--amber)" aria-hidden="true"></i>
+                  <span style="font-size:12px;color:var(--amber)">อัปเกรดเป็น Pro เพื่อ Recurring และ AI categorize</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><span class="card-title">การแสดงผล</span></div>
+              <div class="card-body">
+                <div class="settings-row">
+                  <div><div class="settings-label">สกุลเงิน</div><div class="settings-sub">ใช้กับทุกรายการ</div></div>
+                  <select class="inp" style="width:100px"><option>THB ฿</option><option>USD $</option><option>EUR €</option></select>
+                </div>
+                <div class="settings-row">
+                  <div><div class="settings-label">Dark Mode</div><div class="settings-sub">เปลี่ยนธีมสีเข้ม</div></div>
+                  <div class="switch" id="sw-dark" onclick="toggleSwitch(this)"></div>
+                </div>
+                <div class="settings-row">
+                  <div><div class="settings-label">ภาษา</div><div class="settings-sub">Language</div></div>
+                  <select class="inp" style="width:100px"><option>ไทย</option><option>English</option></select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:16px">
+
+            <div class="card">
+              <div class="card-head">
+                <span class="card-title">หมวดหมู่</span>
+                <button class="btn" style="font-size:12px;padding:5px 10px"><i class="ti ti-plus" aria-hidden="true"></i> เพิ่ม</button>
+              </div>
+              <div class="card-body">
+                <div style="margin-bottom:8px;font-size:12px;color:var(--ink3)">รายจ่าย</div>
+                <div>
+                  <span class="cat-chip"><i class="ti ti-circle-filled" style="color:#52b788;font-size:8px" aria-hidden="true"></i> Food <i class="ti ti-x" aria-hidden="true"></i></span>
+                  <span class="cat-chip"><i class="ti ti-circle-filled" style="color:#4a90d9;font-size:8px" aria-hidden="true"></i> Travel <i class="ti ti-x" aria-hidden="true"></i></span>
+                  <span class="cat-chip"><i class="ti ti-circle-filled" style="color:#e8825a;font-size:8px" aria-hidden="true"></i> Shopping <i class="ti ti-x" aria-hidden="true"></i></span>
+                  <span class="cat-chip"><i class="ti ti-circle-filled" style="color:#f0c050;font-size:8px" aria-hidden="true"></i> Utilities <i class="ti ti-x" aria-hidden="true"></i></span>
+                  <span class="cat-chip"><i class="ti ti-circle-filled" style="color:#c8b8e0;font-size:8px" aria-hidden="true"></i> Health <i class="ti ti-x" aria-hidden="true"></i></span>
+                </div>
+                <div style="margin-top:12px;margin-bottom:8px;font-size:12px;color:var(--ink3)">รายรับ</div>
+                <div>
+                  <span class="cat-chip"><i class="ti ti-circle-filled" style="color:#1a4f8a;font-size:8px" aria-hidden="true"></i> Salary <i class="ti ti-x" aria-hidden="true"></i></span>
+                  <span class="cat-chip"><i class="ti ti-circle-filled" style="color:#2d6a4f;font-size:8px" aria-hidden="true"></i> Freelance <i class="ti ti-x" aria-hidden="true"></i></span>
+                  <span class="cat-chip"><i class="ti ti-circle-filled" style="color:#b5540a;font-size:8px" aria-hidden="true"></i> Investment <i class="ti ti-x" aria-hidden="true"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><span class="card-title">การแจ้งเตือน</span></div>
+              <div class="card-body">
+                <div class="settings-row">
+                  <div><div class="settings-label">แจ้งเตือนรายการประจำ</div><div class="settings-sub">ก่อน 1 วัน</div></div>
+                  <div class="switch on" id="sw-notif1" onclick="toggleSwitch(this)"></div>
+                </div>
+                <div class="settings-row">
+                  <div><div class="settings-label">สรุปรายสัปดาห์</div><div class="settings-sub">ทุกวันจันทร์ 9:00</div></div>
+                  <div class="switch on" id="sw-notif2" onclick="toggleSwitch(this)"></div>
+                </div>
+                <div class="settings-row">
+                  <div><div class="settings-label">แจ้งเมื่อเกินงบ</div><div class="settings-sub">Budget alert</div></div>
+                  <div class="switch" id="sw-notif3" onclick="toggleSwitch(this)"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- PLACEHOLDER FOR DASH / TXN -->
+      <div class="page" id="page-dash">
+        <div style="padding:40px;text-align:center;color:var(--ink3)">
+          <i class="ti ti-layout-dashboard" style="font-size:40px;margin-bottom:12px;display:block" aria-hidden="true"></i>
+          <div style="font-size:14px">Dashboard ดูได้ใน mockup แรก</div>
+          <button class="btn btn-dark" style="margin-top:12px;font-size:12px" onclick="sendPrompt('Show me the dashboard mockup again')">ดู Dashboard ↗</button>
+        </div>
+      </div>
+      <div class="page" id="page-txn">
+        <div style="padding:40px;text-align:center;color:var(--ink3)">
+          <i class="ti ti-arrows-exchange" style="font-size:40px;margin-bottom:12px;display:block" aria-hidden="true"></i>
+          <div style="font-size:14px">Transactions — มาจาก Dashboard หน้าหลัก</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const pages = {
+  dash:      {title:'Dashboard',       sub:'ภาพรวมการเงิน',           actions:'<button class="btn btn-dark"><i class="ti ti-plus"></i> Add Transaction</button>'},
+  txn:       {title:'Transactions',    sub:'รายการทั้งหมด',           actions:'<button class="btn btn-dark"><i class="ti ti-plus"></i> Add</button>'},
+  bulk:      {title:'Bulk Add',        sub:'เพิ่มหลายรายการพร้อมกัน', actions:'<button class="btn"><i class="ti ti-trash"></i> ล้างทั้งหมด</button><button class="btn btn-dark"><i class="ti ti-device-floppy"></i> บันทึกทั้งหมด</button>'},
+  import:    {title:'Import',          sub:'นำเข้าจาก Excel / Google Sheets', actions:'<button class="btn"><i class="ti ti-download"></i> Download Template</button>'},
+  analytics: {title:'Analytics',       sub:'วิเคราะห์การเงิน',         actions:'<div class="toggle-group"><button class="tgl active">เดือนนี้</button><button class="tgl">3 เดือน</button><button class="tgl">1 ปี</button></div>'},
+  recurring: {title:'Recurring',       sub:'รายการประจำ',              actions:'<button class="btn btn-dark"><i class="ti ti-plus"></i> เพิ่มรายการ</button>'},
+  export:    {title:'Export',          sub:'ส่งออกรายงาน',            actions:''},
+  settings:  {title:'Settings',        sub:'ตั้งค่าและจัดการบัญชี',   actions:'<button class="btn btn-dark"><i class="ti ti-device-floppy"></i> บันทึกการตั้งค่า</button>'},
+};
+
+function nav(el){
+  document.querySelectorAll('.s-item').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  const p = el.dataset.page;
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  const cfg = pages[p];
+  document.getElementById('page-title').textContent = cfg.title;
+  document.getElementById('page-sub').textContent = cfg.sub;
+  document.getElementById('tb-actions').innerHTML = cfg.actions;
+  document.querySelectorAll('.toggle-group .tgl').forEach(t=>{
+    t.addEventListener('click',function(){
+      this.closest('.toggle-group').querySelectorAll('.tgl').forEach(x=>x.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+}
+
+function toggleSwitch(el){el.classList.toggle('on')}
+
+let rowCount = 5;
+function addRow(){
+  rowCount++;
+  const tb = document.getElementById('bulk-body');
+  const tr = document.createElement('tr');
+  const today = new Date().toISOString().slice(0,10);
+  tr.innerHTML = `<td class="row-num">${rowCount}</td><td><input class="b-inp" type="date" value="${today}"></td><td><input class="b-inp" type="text" placeholder="ชื่อรายการ..."></td><td><select class="b-inp"><option>Food</option><option>Travel</option><option>Shopping</option><option>Salary</option></select></td><td><select class="b-inp"><option>Expense</option><option>Income</option></select></td><td><input class="b-inp" type="number" placeholder="0"></td><td><button onclick="delRow(this)" style="border:none;background:none;cursor:pointer;color:var(--ink3);font-size:14px"><i class="ti ti-trash"></i></button></td>`;
+  tb.appendChild(tr);
+  document.getElementById('row-count').textContent = rowCount+' รายการ';
+}
+function delRow(btn){
+  btn.closest('tr').remove();
+  rowCount--;
+  document.querySelectorAll('#bulk-body tr').forEach((r,i)=>r.querySelector('.row-num').textContent=i+1);
+  document.getElementById('row-count').textContent = rowCount+' รายการ';
+}
+function mockUpload(){
+  document.getElementById('dz').innerHTML = '<div class="drop-icon" style="color:var(--greenm)"><i class="ti ti-circle-check"></i></div><div class="drop-title">transactions_may2026.xlsx</div><div class="drop-sub">50 rows · 12 KB · กำลังตรวจสอบ...</div>';
+  setTimeout(()=>{
+    document.getElementById('preview-card').style.display='block';
+    document.getElementById('dz').innerHTML = '<div class="drop-icon" style="color:var(--greenm)"><i class="ti ti-circle-check"></i></div><div class="drop-title">transactions_may2026.xlsx</div><div class="drop-sub" style="color:var(--green)">50 rows พร้อม import</div>';
+  },800);
+}
+function handleDrop(e){e.preventDefault();mockUpload()}
+</script>
